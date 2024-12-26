@@ -13,10 +13,6 @@ SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 70
 SWEP.UseHands = true
 
-SWEP.SwingSound = Sound("WeaponFrag.Throw")
-SWEP.LungeSound = Sound("WeaponFrag.Throw")
-SWEP.HitSound = Sound("weapons/knife/knife_hitwall1.wav")
-
 SWEP.HitDistance = 96
 SWEP.HitDistanceLunge = 128
 

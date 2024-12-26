@@ -19,15 +19,47 @@ SWEP.Secondary.Ammo = ""
 
 SWEP.DrawAmmo = false
 
-SWEP.SwingSound = Sound("WeaponFrag.Throw")
-SWEP.LungeSound = Sound("WeaponFrag.Throw")
-SWEP.HitSound = Sound("weapons/knife/knife_hitwall1.wav")
-SWEP.PogoEndSound = Sound("physics/plastic/plastic_box_impact_hard1.wav")
+sound.Add({
+    name = "BloxxersArsenal.Sword.Slash",
+    sound = "bloxxers_arsenal/sword/slash.wav",
+    level = 70,
+    channel = CHAN_WEAPON,
+})
+sound.Add({
+    name = "BloxxersArsenal.Sword.Lunge",
+    sound = "bloxxers_arsenal/sword/lunge.wav",
+    level = 70,
+    channel = CHAN_WEAPON,
+})
+sound.Add({
+    name = "BloxxersArsenal.Sword.Draw",
+    sound = "bloxxers_arsenal/sword/draw.wav",
+    level = 70,
+    channel = CHAN_WEAPON,
+})
+sound.Add({
+    name = "BloxxersArsenal.Sword.Pogo",
+    sound = "weapons/knife/knife_hitwall1.wav",
+    level = 70,
+    channel = CHAN_ITEM,
+})
+sound.Add({
+    name = "BloxxersArsenal.Sword.PogoEnd",
+    sound = "physics/plastic/plastic_box_impact_hard1.wav",
+    level = 70,
+    channel = CHAN_ITEM,
+})
+
+SWEP.DrawSound = Sound("BloxxersArsenal.Sword.Draw")
+SWEP.SlashSound = Sound("BloxxersArsenal.Sword.Slash")
+SWEP.LungeSound = Sound("BloxxersArsenal.Sword.Lunge")
+SWEP.PogoSound = Sound("BloxxersArsenal.Sword.Pogo")
+SWEP.PogoEndSound = Sound("BloxxersArsenal.Sword.PogoEnd")
 
 SWEP.HitDistance = 72
 SWEP.HitDistanceLunge = 128
 
-SWEP.HitDelay = 0.08
+SWEP.HitDelay = 0.1
 SWEP.HitForceScale = 80
 SWEP.SwingCooldown = 0.3
 SWEP.SwingCooldownLunge = 0.75
@@ -91,7 +123,7 @@ function SWEP:PrimaryAttack()
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldownLunge)
         self:SetNextSecondaryFire(CurTime() + self.SwingCooldownLunge)
     else
-        self:EmitSound(self.SwingSound)
+        self:EmitSound(self.SlashSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldown)
         self:SetNextSecondaryFire(CurTime() + self.SwingCooldown)
     end
@@ -131,7 +163,7 @@ function SWEP:DealDamage()
 
     -- We need the second part for single player because SWEP:Think is ran shared in SP
     -- if tr.Hit and not (game.SinglePlayer() and CLIENT) then
-    --     self:EmitSound(self.HitSound)
+    --     self:EmitSound(self.PogoSound)
     -- end
 
     local hit = false
@@ -175,7 +207,7 @@ function SWEP:DealDamage()
                 if self.PogoCounter >= self.PogoLimit then
                     self:EmitSound(self.PogoEndSound)
                 else
-                    self:EmitSound(self.HitSound)
+                    self:EmitSound(self.PogoSound)
                 end
             end
         end
@@ -200,20 +232,20 @@ function SWEP:DealDamage()
     owner:LagCompensation(false)
 end
 
-function SWEP:OnDrop()
-    self:Remove() -- You can't drop fists
-end
-
-local sv_deployspeed = GetConVar("sv_defaultdeployspeed")
+--local sv_deployspeed = GetConVar("sv_defaultdeployspeed")
 
 function SWEP:Deploy()
-    local speed = sv_deployspeed:GetFloat()
+    local speed = 1 --sv_deployspeed:GetFloat()
     local vm = self:GetOwner():GetViewModel()
     vm:SendViewModelMatchingSequence(vm:LookupSequence("draw"))
     vm:SetPlaybackRate(speed)
     self:SetNextPrimaryFire(CurTime() + vm:SequenceDuration() / speed)
     self:SetNextSecondaryFire(CurTime() + vm:SequenceDuration() / speed)
     self:UpdateNextIdle()
+
+    if IsFirstTimePredicted() then
+        self:EmitSound(self.DrawSound)
+    end
 
     if SERVER then
         self:SetCombo(0)
