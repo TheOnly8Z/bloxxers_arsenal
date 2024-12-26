@@ -22,8 +22,9 @@ SWEP.DrawAmmo = false
 SWEP.SwingSound = Sound("WeaponFrag.Throw")
 SWEP.LungeSound = Sound("WeaponFrag.Throw")
 SWEP.HitSound = Sound("weapons/knife/knife_hitwall1.wav")
+SWEP.PogoEndSound = Sound("physics/plastic/plastic_box_impact_hard1.wav")
 
-SWEP.HitDistance = 96
+SWEP.HitDistance = 72
 SWEP.HitDistanceLunge = 128
 
 SWEP.HitDelay = 0.08
@@ -41,8 +42,8 @@ SWEP.PogoCounter = 0
 
 -- Bounds of the punch's hull trace
 SWEP.HitSize = {
-    Min = Vector(-32, -10, -8),
-    Max = Vector(32, 10, 8)
+    Min = Vector(-64, -64, -8),
+    Max = Vector(64, 64, 8)
 }
 
 SWEP.HitSizeLunge = {
@@ -129,9 +130,9 @@ function SWEP:DealDamage()
     end
 
     -- We need the second part for single player because SWEP:Think is ran shared in SP
-    if tr.Hit and not (game.SinglePlayer() and CLIENT) then
-        self:EmitSound(self.HitSound)
-    end
+    -- if tr.Hit and not (game.SinglePlayer() and CLIENT) then
+    --     self:EmitSound(self.HitSound)
+    -- end
 
     local hit = false
     local scale = phys_pushscale:GetFloat()
@@ -165,10 +166,18 @@ function SWEP:DealDamage()
         SuppressHostEvents(owner)
         hit = true
     elseif tr.HitWorld then
-        local dot = tr.HitNormal:Dot(upvector)
-        if SERVER and dot >= 0 and self:AllowPogo() then
+        if IsFirstTimePredicted() and tr.HitNormal:Dot(upvector) >= 0 and self:AllowPogo() then
             self.PogoCounter = self.PogoCounter + 1
-            self:GetOwner():SetVelocity(Vector(0, 0, self:GetOwner():GetVelocity().z * -1 + (anim == "lunge" and self.PogoForceLunge or self.PogoForce)))
+            if SERVER then
+                self:GetOwner():SetVelocity(Vector(0, 0, self:GetOwner():GetVelocity().z * -1 + (anim == "lunge" and self.PogoForceLunge or self.PogoForce)))
+            end
+            if not (game.SinglePlayer() and CLIENT) then
+                if self.PogoCounter >= self.PogoLimit then
+                    self:EmitSound(self.PogoEndSound)
+                else
+                    self:EmitSound(self.HitSound)
+                end
+            end
         end
     end
 

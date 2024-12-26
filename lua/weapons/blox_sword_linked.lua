@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 SWEP.PrintName = "Linked Sword"
+SWEP.Base = "blox_base_sword"
 SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = true
 
@@ -11,18 +12,6 @@ SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 70
 SWEP.UseHands = true
-
-SWEP.Primary.ClipSize = -1
-SWEP.Primary.DefaultClip = -1
-SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = ""
-
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
-SWEP.Secondary.Automatic = true
-SWEP.Secondary.Ammo = ""
-
-SWEP.DrawAmmo = false
 
 SWEP.SwingSound = Sound("WeaponFrag.Throw")
 SWEP.LungeSound = Sound("WeaponFrag.Throw")
