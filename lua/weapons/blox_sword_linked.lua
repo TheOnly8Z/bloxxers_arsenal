@@ -25,14 +25,3 @@ SWEP.ComboResetTime = 0.3
 SWEP.HitMaxTargets = 1
 SWEP.HitDamage = 30
 SWEP.ComboDamage = 60
-
--- Bounds of the punch's hull trace
-SWEP.HitSize = {
-    Min = Vector(-32, -10, -8),
-    Max = Vector(32, 10, 8)
-}
-
-SWEP.HitSizeLunge = {
-    Min = Vector(-10, -10, -8),
-    Max = Vector(10, 10, 8)
-}
