@@ -1,4 +1,5 @@
-SWEP.PrintName = "BLOXXERS' Arsenal Sword Base"
+SWEP.PrintName = "Bloxxer's Arsenal Base Sword"
+SWEP.Base = "blox_base"
 SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = false
 
@@ -7,17 +8,8 @@ SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 70
 SWEP.UseHands = true
 
-SWEP.Primary.ClipSize = -1
-SWEP.Primary.DefaultClip = -1
-SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = ""
+DEFINE_BASECLASS(SWEP.Base)
 
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
-SWEP.Secondary.Automatic = true
-SWEP.Secondary.Ammo = ""
-
-SWEP.DrawAmmo = false
 
 sound.Add({
     name = "BloxxersArsenal.Sword.Slash",
@@ -97,23 +89,17 @@ SWEP.ComboDamage = 60
 
 SWEP.HitEntities = {}
 
+SWEP.HoldType = "knife"
+
 local upvector = Vector(0, 0, 1)
 
-function SWEP:Initialize()
-    self:SetHoldType("knife")
-end
-
 function SWEP:SetupDataTables()
-    self:NetworkVar("Float", 0, "NextMeleeAttack")
-    self:NetworkVar("Float", 1, "NextIdle")
+    self:NetworkVar("Float", 0, "NextIdle")
+    self:NetworkVar("Float", 1, "NextMeleeAttack")
     self:NetworkVar("Float", 2, "NextMeleeAttackEnd")
     self:NetworkVar("Int", 2, "Combo")
 end
 
-function SWEP:UpdateNextIdle()
-    local vm = self:GetOwner():GetViewModel()
-    self:SetNextIdle(CurTime() + vm:SequenceDuration() / vm:GetPlaybackRate())
-end
 
 function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
@@ -266,47 +252,30 @@ function SWEP:DealDamage(initial)
     end
 end
 
---local sv_deployspeed = GetConVar("sv_defaultdeployspeed")
-
 function SWEP:Deploy()
-    local speed = 1 --sv_deployspeed:GetFloat()
-    local vm = self:GetOwner():GetViewModel()
-    vm:SendViewModelMatchingSequence(vm:LookupSequence("draw"))
-    vm:SetPlaybackRate(speed)
-    self:SetNextPrimaryFire(CurTime() + vm:SequenceDuration() / speed)
-    self:SetNextSecondaryFire(CurTime() + vm:SequenceDuration() / speed)
-    self:UpdateNextIdle()
-
-    if IsFirstTimePredicted() then
-        self:EmitSound(self.DrawSound)
-    end
-
+    BaseClass.Deploy(self)
     if SERVER then
         self:SetCombo(0)
     end
-
     return true
 end
 
 function SWEP:Holster()
-    self:SetNextMeleeAttack(0)
+    BaseClass.Holster(self)
 
+    self:SetNextMeleeAttack(0)
+    self:SetNextMeleeAttackEnd(0)
     return true
 end
 
 function SWEP:Think()
+    BaseClass.Think(self)
+
     local curtime = CurTime()
 
     if IsValid(self:GetOwner()) and self:GetOwner():OnGround() then
         self.PogoCounter = 0
     end
-
-    --[[
-    if idletime > 0 and curtime > idletime then
-        vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_idle_0" .. math.random(1, 2)))
-        self:UpdateNextIdle()
-    end
-    ]]
 
     local meleetime = self:GetNextMeleeAttack()
     local meleeendtime = self:GetNextMeleeAttackEnd()
