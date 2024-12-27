@@ -11,6 +11,11 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = true
 SWEP.Secondary.Ammo = ""
 
+SWEP.PogoLimit = 6
+SWEP.PogoCounter = 0
+SWEP.PogoMaxVelocity = 200
+SWEP.PogoMinVelocity = -400
+
 SWEP.DrawAmmo = false
 
 SWEP.DrawSound = ""
@@ -47,11 +52,27 @@ function SWEP:Deploy()
     return true
 end
 
+local cvar = GetConVar("sv_defaultdeployspeed")
 function SWEP:Holster()
+    local vm = self:GetOwner():GetViewModel()
+    vm:SetPlaybackRate(cvar:GetFloat()) -- If we holster to a HL2 weapon, this is required to give it the proper deploy speed
     return true
 end
 
 function SWEP:Think()
+    if IsValid(self:GetOwner()) and self:GetOwner():OnGround() then
+        self.PogoCounter = 0
+    end
+end
+
+local upvector = Vector(0, 0, 1)
+function SWEP:AllowPogo()
+    if not IsValid(self:GetOwner()) or not self:GetOwner():IsPlayer() then return false end
+    local vz = self:GetOwner():GetVelocity().z
+
+    return self.PogoCounter < self.PogoLimit
+            and self:GetOwner():GetAimVector():Dot(upvector) <= -0.707
+            and not self:GetOwner():OnGround() and vz >= self.PogoMinVelocity and vz <= self.PogoMaxVelocity
 end
 
 AddCSLuaFile()

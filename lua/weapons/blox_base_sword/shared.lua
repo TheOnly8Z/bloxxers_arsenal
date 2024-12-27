@@ -3,6 +3,9 @@ SWEP.Base = "blox_base"
 SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = false
 
+SWEP.Author = "8Z"
+SWEP.Instructions = "Left Click: Swing"
+
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 70
@@ -65,8 +68,9 @@ SWEP.ComboResetTime = 0.3
 SWEP.PogoLimit = 6
 SWEP.PogoForce = 250
 SWEP.PogoForceLunge = 500
+SWEP.PogoMaxVelocity = 200
+SWEP.PogoMinVelocity = -400
 
-SWEP.PogoCounter = 0
 SWEP.HitCounter = 0
 
 SWEP.HitSizeMin = {
@@ -177,7 +181,7 @@ function SWEP:DealDamage(initial)
 
     local scale = phys_pushscale:GetFloat()
 
-    if SERVER and IsValid(tr.Entity) and tr.Entity:Health() > 0 and (self.HitMaxTargets == 0 or self.HitCounter < self.HitMaxTargets) then
+    if SERVER and IsValid(tr.Entity) and (tr.Entity.IsBloxxersProjectile or tr.Entity:Health() > 0) and (self.HitMaxTargets == 0 or self.HitCounter < self.HitMaxTargets) then
         local dmginfo = DamageInfo()
         local attacker = owner
 
@@ -202,13 +206,18 @@ function SWEP:DealDamage(initial)
         end
 
         dmginfo:SetDamage(istable(dmg) and math.random(dmg[1], dmg[2]) or dmg)
+        dmginfo:SetDamageCustom(BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT)
+
         SuppressHostEvents(NULL) -- Let the breakable gibs spawn in multiplayer on client
         -- tr.Entity:TakeDamageInfo(dmginfo)
         tr.Entity:DispatchTraceAttack(dmginfo, tr, owner:GetAimVector())
         SuppressHostEvents(owner)
         hit = true
 
-        self.HitCounter = self.HitCounter + 1
+        if not tr.Entity.IsBloxxersProjectile then
+            self.HitCounter = self.HitCounter + 1
+        end
+
         if self.HitMaxTargets > 0 and self.HitCounter >= self.HitMaxTargets then
             self:SetNextMeleeAttackEnd(0)
         end
@@ -217,7 +226,7 @@ function SWEP:DealDamage(initial)
         if IsFirstTimePredicted() and tr.HitNormal:Dot(upvector) >= 0 and self:AllowPogo() then
             self.PogoCounter = self.PogoCounter + 1
             if SERVER then
-                self:GetOwner():SetVelocity(Vector(0, 0, self:GetOwner():GetVelocity().z * -1 + (anim == "lunge" and self.PogoForceLunge or self.PogoForce)))
+                self:GetOwner():SetVelocity(Vector(0, 0, math.min(0, self:GetOwner():GetVelocity().z) * -1 + (anim == "lunge" and self.PogoForceLunge or self.PogoForce)))
             end
             if not (game.SinglePlayer() and CLIENT) then
                 if self.PogoCounter >= self.PogoLimit then
@@ -291,14 +300,6 @@ function SWEP:Think()
     end
 end
 
-function SWEP:AllowPogo()
-    if not IsValid(self:GetOwner()) or not self:GetOwner():IsPlayer() then return false end
-    local vz = self:GetOwner():GetVelocity().z
-
-    return self.PogoCounter < self.PogoLimit
-            and self:GetOwner():GetAimVector():Dot(upvector) <= -0.707
-            and not self:GetOwner():OnGround() and vz >= -400 and vz <= 200
-end
 
 AddCSLuaFile()
 local searchdir = "weapons/blox_base_sword"

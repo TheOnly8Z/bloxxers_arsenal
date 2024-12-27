@@ -2,6 +2,18 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+---------------------------------------------------------------------
+-- Functions to be implemented by inherited projectiles
+---------------------------------------------------------------------
+
+-- Called when the projectile receives damage marked as reflecting
+function ENT:OnReflect(dmg) end
+
+
+---------------------------------------------------------------------
+-- End of functions to implement
+---------------------------------------------------------------------
+
 function ENT:Initialize()
     self:SetModel(self.Model)
 
@@ -35,4 +47,11 @@ end
 
 function ENT:PhysicsUpdate(phys)
     phys:SetVelocityInstantaneous(phys:GetVelocity() + physenv.GetGravity() * self.GravityMultiplier * engine.TickInterval())
+end
+
+function ENT:OnTakeDamage(dmg)
+    if bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT then
+        self:OnReflect(dmg)
+        return 0
+    end
 end
