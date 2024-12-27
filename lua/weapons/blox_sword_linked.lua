@@ -16,18 +16,15 @@ SWEP.UseHands = true
 SWEP.HitDistance = 96
 SWEP.HitDistanceLunge = 128
 
-SWEP.HitDelay = 0.08
-SWEP.HitForceScale = 80
 SWEP.SwingCooldown = 0.3
-SWEP.SwingCooldownLunge = 0.75
+SWEP.SwingCooldownLunge = 0.9
 
 SWEP.ComboCount = 2
-SWEP.ComboResetTime = 0.4
+SWEP.ComboResetTime = 0.3
 
-SWEP.PogoLimit = 6
-SWEP.PogoForce = 250
-SWEP.PogoForceLunge = 500
-SWEP.PogoCounter = 0
+SWEP.HitMaxTargets = 1
+SWEP.HitDamage = 30
+SWEP.ComboDamage = 60
 
 -- Bounds of the punch's hull trace
 SWEP.HitSize = {
@@ -39,6 +36,3 @@ SWEP.HitSizeLunge = {
     Min = Vector(-10, -10, -8),
     Max = Vector(10, 10, 8)
 }
-
-SWEP.HitDamage = 30
-SWEP.ComboDamage = 60

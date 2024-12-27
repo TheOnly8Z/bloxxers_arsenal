@@ -56,23 +56,32 @@ SWEP.LungeSound = Sound("BloxxersArsenal.Sword.Lunge")
 SWEP.PogoSound = Sound("BloxxersArsenal.Sword.Pogo")
 SWEP.PogoEndSound = Sound("BloxxersArsenal.Sword.PogoEnd")
 
-SWEP.HitDistance = 72
+SWEP.HitDistance = 96
 SWEP.HitDistanceLunge = 128
 
+SWEP.HitMaxTargets = 0
 SWEP.HitDelay = 0.1
-SWEP.HitForceScale = 80
+SWEP.HitLingerTime = 0.08
+SWEP.HitLingerTimeLunge = 0.02
+SWEP.HitForceScale = 100
 SWEP.SwingCooldown = 0.3
 SWEP.SwingCooldownLunge = 0.75
 
 SWEP.ComboCount = 2
-SWEP.ComboResetTime = 0.4
+SWEP.ComboResetTime = 0.3
 
 SWEP.PogoLimit = 6
 SWEP.PogoForce = 250
 SWEP.PogoForceLunge = 500
-SWEP.PogoCounter = 0
 
--- Bounds of the punch's hull trace
+SWEP.PogoCounter = 0
+SWEP.HitCounter = 0
+
+SWEP.HitSizeMin = {
+    Min = Vector(-0.5, -0.5, -0.5),
+    Max = Vector(0.5, 0.5, 0.5)
+}
+
 SWEP.HitSize = {
     Min = Vector(-64, -64, -8),
     Max = Vector(64, 64, 8)
@@ -86,6 +95,8 @@ SWEP.HitSizeLunge = {
 SWEP.HitDamage = 30
 SWEP.ComboDamage = 60
 
+SWEP.HitEntities = {}
+
 local upvector = Vector(0, 0, 1)
 
 function SWEP:Initialize()
@@ -95,6 +106,7 @@ end
 function SWEP:SetupDataTables()
     self:NetworkVar("Float", 0, "NextMeleeAttack")
     self:NetworkVar("Float", 1, "NextIdle")
+    self:NetworkVar("Float", 2, "NextMeleeAttackEnd")
     self:NetworkVar("Int", 2, "Combo")
 end
 
@@ -118,14 +130,22 @@ function SWEP:PrimaryAttack()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     self:UpdateNextIdle()
     self:SetNextMeleeAttack(CurTime() + self.HitDelay)
+
+    if IsFirstTimePredicted() then
+        self.HitEntities = {self:GetOwner()}
+        self.HitCounter = 0
+    end
+
     if anim == "lunge" then
         self:EmitSound(self.LungeSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldownLunge)
         self:SetNextSecondaryFire(CurTime() + self.SwingCooldownLunge)
+        self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
     else
         self:EmitSound(self.SlashSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldown)
         self:SetNextSecondaryFire(CurTime() + self.SwingCooldown)
+        self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
     end
 end
 
@@ -134,27 +154,30 @@ end
 
 local phys_pushscale = GetConVar("phys_pushscale")
 
-function SWEP:DealDamage()
+function SWEP:DealDamage(initial)
     local owner = self:GetOwner()
     local anim = self:GetSequenceName(owner:GetViewModel():GetSequence())
+
     owner:LagCompensation(true)
 
     local dist = anim == "lunge" and self.HitDistanceLunge or self.HitDistance
     local hull = anim == "lunge" and self.HitSizeLunge or self.HitSize
 
-    local tr = util.TraceLine({
+    -- Initial hit is also a hull trace so it does not trigger hitgroup multipliers
+    local tr = util.TraceHull({
         start = owner:GetShootPos(),
         endpos = owner:GetShootPos() + owner:GetAimVector() * dist,
-        filter = owner,
+        mins = self.HitSizeMin.Min,
+        maxs = self.HitSizeMin.Max,
+        filter = self.HitEntities,
         mask = MASK_SHOT_HULL
     })
-
 
     if not IsValid(tr.Entity) then
         tr = util.TraceHull({
             start = owner:GetShootPos(),
             endpos = owner:GetShootPos() + owner:GetAimVector() * dist,
-            filter = owner,
+            filter = self.HitEntities,
             mins = hull.Min,
             maxs = hull.Max,
             mask = MASK_SHOT_HULL
@@ -166,10 +189,9 @@ function SWEP:DealDamage()
     --     self:EmitSound(self.PogoSound)
     -- end
 
-    local hit = false
     local scale = phys_pushscale:GetFloat()
 
-    if SERVER and IsValid(tr.Entity) and (tr.Entity:IsNPC() or tr.Entity:IsPlayer() or tr.Entity:Health() > 0) then
+    if SERVER and IsValid(tr.Entity) and tr.Entity:Health() > 0 and (self.HitMaxTargets == 0 or self.HitCounter < self.HitMaxTargets) then
         local dmginfo = DamageInfo()
         local attacker = owner
 
@@ -179,15 +201,17 @@ function SWEP:DealDamage()
 
         dmginfo:SetAttacker(attacker)
         dmginfo:SetInflictor(self)
-        dmginfo:SetDamageType(DMG_SLASH)
+        if (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsNextBot()) then
+            dmginfo:SetDamageType(DMG_SLASH) -- this seems to significantly amplify push force on props
+        end
         local dmg = self.HitDamage
 
         if anim == "slash2" then
-            dmginfo:SetDamageForce(owner:GetRight() * 4912 * scale + owner:GetForward() * 9998 * scale) -- Yes we need those specific numbers
+            dmginfo:SetDamageForce(owner:GetRight() * 9000 * scale + owner:GetForward() * 9000 * scale) -- Yes we need those specific numbers
         elseif anim == "slash1" then
-            dmginfo:SetDamageForce(owner:GetRight() * -4912 * scale + owner:GetForward() * 9989 * scale)
+            dmginfo:SetDamageForce(owner:GetRight() * -9000 * scale + owner:GetForward() * 9000 * scale)
         elseif anim == "lunge" then
-            dmginfo:SetDamageForce(owner:GetUp() * 5158 * scale + owner:GetForward() * 10012 * scale)
+            dmginfo:SetDamageForce(owner:GetUp() * 9000 * scale + owner:GetForward() * 12000 * scale)
             dmg = self.ComboDamage
         end
 
@@ -197,7 +221,13 @@ function SWEP:DealDamage()
         tr.Entity:DispatchTraceAttack(dmginfo, tr, owner:GetAimVector())
         SuppressHostEvents(owner)
         hit = true
-    elseif tr.HitWorld then
+
+        self.HitCounter = self.HitCounter + 1
+        if self.HitMaxTargets > 0 and self.HitCounter >= self.HitMaxTargets then
+            self:SetNextMeleeAttackEnd(0)
+        end
+
+    elseif tr.HitWorld and initial then
         if IsFirstTimePredicted() and tr.HitNormal:Dot(upvector) >= 0 and self:AllowPogo() then
             self.PogoCounter = self.PogoCounter + 1
             if SERVER then
@@ -221,7 +251,7 @@ function SWEP:DealDamage()
         end
     end
 
-    if SERVER then
+    if initial and SERVER then
         if anim ~= "lunge" then
             self:SetCombo(self:GetCombo() + 1)
         else
@@ -230,6 +260,10 @@ function SWEP:DealDamage()
     end
 
     owner:LagCompensation(false)
+
+    if SERVER and IsValid(tr.Entity) then
+        table.insert(self.HitEntities, tr.Entity)
+    end
 end
 
 --local sv_deployspeed = GetConVar("sv_defaultdeployspeed")
@@ -275,10 +309,12 @@ function SWEP:Think()
     ]]
 
     local meleetime = self:GetNextMeleeAttack()
-
+    local meleeendtime = self:GetNextMeleeAttackEnd()
     if meleetime > 0 and curtime > meleetime then
-        self:DealDamage()
+        self:DealDamage(true)
         self:SetNextMeleeAttack(0)
+    elseif meleeendtime > 0 and curtime <= meleeendtime then
+        self:DealDamage(false)
     end
 
     if SERVER and curtime > self:GetNextPrimaryFire() + self.ComboResetTime then
@@ -291,7 +327,7 @@ function SWEP:AllowPogo()
     local vz = self:GetOwner():GetVelocity().z
 
     return self.PogoCounter < self.PogoLimit
-            and self:GetOwner():GetAimVector():Dot(upvector) <= -0.5
+            and self:GetOwner():GetAimVector():Dot(upvector) <= -0.707
             and not self:GetOwner():OnGround() and vz >= -400 and vz <= 200
 end
 
