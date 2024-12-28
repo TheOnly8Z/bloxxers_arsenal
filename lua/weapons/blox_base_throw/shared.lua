@@ -4,7 +4,7 @@ SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = false
 
 SWEP.Author = "8Z"
-SWEP.Instructions = "Left Click: Throw Forwards\nRight Click: Toss Upwards"
+SWEP.Instructions = "Left Click: Throw Forwards\nReload: Toss Upwards"
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_superball.mdl"
 SWEP.WorldModel = ""
@@ -83,6 +83,10 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+end
+
+function SWEP:Reload()
+    if self:GetNextPrimaryFire() > CurTime() then return end
     if not self.AltThrow then return end
     local owner = self:GetOwner()
     owner:SetAnimation(PLAYER_ATTACK1)

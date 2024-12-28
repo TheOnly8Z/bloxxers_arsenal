@@ -192,11 +192,11 @@ function SWEP:DealDamage(initial)
 
         dmginfo:SetAttacker(attacker)
         dmginfo:SetInflictor(self)
+        dmginfo:SetDamagePosition(tr.HitPos)
         if (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsNextBot()) then
             dmginfo:SetDamageType(DMG_SLASH) -- this seems to significantly amplify push force on props
         end
         local dmg = self.HitDamage
-
         if anim == "slash2" then
             dmginfo:SetDamageForce(owner:GetRight() * 9000 * scale + owner:GetForward() * 9000 * scale) -- Yes we need those specific numbers
         elseif anim == "slash1" then
