@@ -61,7 +61,7 @@ function ENT:PhysicsCollide(data, physobj)
         local pitch = Lerp(data.Speed / self.DamageSpeedThreshold, 90, 100)
         sound.Play(BounceSound, self:GetPos(), 75, math.random(pitch - 5, pitch + 5), math.Clamp(data.Speed / 1000, 0, 0.9))
 
-        if data.DeltaTime > 0.1 and IsValid(ent) and (ent:IsPlayer() or ent:IsNPC() or ent:Health() > 0) then
+        if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC() or ent:Health() > 0) then
             local dmg = DamageInfo()
             dmg:SetAttacker(self:GetOwner())
             dmg:SetInflictor(self)
