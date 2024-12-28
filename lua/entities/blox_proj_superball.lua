@@ -68,9 +68,13 @@ function ENT:PhysicsCollide(data, physobj)
             dmg:SetDamage(Lerp((data.Speed / self.DamageSpeedThreshold) ^ 0.5, self.DamageMin, self.Damage))
             dmg:SetDamageType(DMG_GENERIC)
             dmg:SetDamagePosition(data.HitPos)
-            dmg:SetDamageForce(data.OurOldVelocity)
+            dmg:SetDamageForce(data.OurOldVelocity * 10)
             ent:TakeDamageInfo(dmg)
             hit_enemy = true
+        end
+
+        if ent:GetPhysicsObject():IsValid() then
+            ent:GetPhysicsObject():ApplyForceOffset(data.OurOldVelocity * ent:GetPhysicsObject():GetMass() ^ 0.5, data.HitPos)
         end
 
         local speed_mult = Lerp(lifedelta ^ 2, self.BounceSpeedMax, self.BounceSpeedMin)
