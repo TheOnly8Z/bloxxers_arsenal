@@ -43,7 +43,9 @@ function ENT:Think()
 end
 
 function ENT:PhysicsUpdate(phys)
-    phys:SetVelocityInstantaneous(phys:GetVelocity() + physenv.GetGravity() * self.GravityMultiplier * engine.TickInterval())
+    if self:WaterLevel() <= 2 then
+        phys:SetVelocityInstantaneous(phys:GetVelocity() + physenv.GetGravity() * self.GravityMultiplier * engine.TickInterval())
+    end
 end
 
 function ENT:OnTakeDamage(dmg)

@@ -79,7 +79,7 @@ SWEP.HitSizeMin = {
 }
 
 SWEP.HitSize = {
-    Min = Vector(-64, -64, -8),
+    Min = Vector(-64, -64, -16),
     Max = Vector(64, 64, 8)
 }
 

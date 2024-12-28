@@ -9,7 +9,7 @@ ENT.PhysicsMaterial = "metal_bouncy"
 ENT.PhysicsSphere = 15
 
 ENT.GravityMultiplier = 3
-ENT.Buoyancy = 0
+ENT.Buoyancy = 0.01
 ENT.LifeTime = 6
 
 ENT.MinBounces = 5
@@ -21,15 +21,27 @@ ENT.DamageSpeedThreshold = 1200
 ENT.Damage = 50
 ENT.DamageMin = 20
 
-ENT.ReflectSpeed = 2500
+ENT.ReflectSpeed = 2000
 
 ENT.Bounces = 0
+
+ENT.Resets = 0
+ENT.MaxResets = 10
 
 function ENT:Initialize()
     BaseClass.Initialize(self)
 
     if SERVER then
         self:SetColor(BLOXXERS_ARSENAL.RandomBrickColor())
+    end
+end
+
+function ENT:Think()
+    BaseClass.Think(self)
+
+    -- Never despawn when held
+    if SERVER and self:IsPlayerHolding() then
+        self.SpawnTime = CurTime()
     end
 end
 
@@ -43,25 +55,23 @@ function ENT:PhysicsCollide(data, physobj)
         self.SpawnTime = math.max(self.SpawnTime, ent.SpawnTime)
     end
 
-    if data.Speed > 60 and data.DeltaTime > 0.1 then
+    if not self:IsPlayerHolding() and data.Speed > 60 then
         local lifedelta = math.Clamp((CurTime() - self.SpawnTime) / self.LifeTime, 0, 1)
 
         local pitch = Lerp(data.Speed / self.DamageSpeedThreshold, 90, 100)
         sound.Play(BounceSound, self:GetPos(), 75, math.random(pitch - 5, pitch + 5), math.Clamp(data.Speed / 1000, 0, 0.9))
 
-
-        if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC() or ent:Health() > 0) then
+        if data.DeltaTime > 0.1 and IsValid(ent) and (ent:IsPlayer() or ent:IsNPC() or ent:Health() > 0) then
             local dmg = DamageInfo()
             dmg:SetAttacker(self:GetOwner())
             dmg:SetInflictor(self)
             dmg:SetDamage(Lerp((data.Speed / self.DamageSpeedThreshold) ^ 0.5, self.DamageMin, self.Damage))
-            dmg:SetDamageType(DMG_CRUSH + DMG_CLUB)
+            dmg:SetDamageType(DMG_GENERIC)
             dmg:SetDamagePosition(data.HitPos)
             dmg:SetDamageForce(data.OurOldVelocity)
             ent:TakeDamageInfo(dmg)
             hit_enemy = true
         end
-
 
         local speed_mult = Lerp(lifedelta ^ 2, self.BounceSpeedMax, self.BounceSpeedMin)
         local old_vel = data.OurOldVelocity
@@ -82,7 +92,7 @@ function ENT:PhysicsCollide(data, physobj)
             local tr = util.TraceLine({
                 start = self:GetPos(),
                 endpos = self:GetOwner():EyePos(),
-                filter = {self, self:GetOwner()},
+                filter = {self, self:GetOwner(), ent},
                 mask = MASK_SOLID,
             })
             if tr.Fraction >= 1 then
@@ -122,7 +132,26 @@ function ENT:OnReflect(dmg)
         self.Reflected = true
         local speed = math.max(self.ReflectSpeed, physobj:GetVelocity():Length())
         physobj:SetVelocity(self:GetOwner():GetAimVector() * speed)
+        if self.Resets < self.MaxResets then
+            self.SpawnTime = CurTime()
+            self.Bounces = 0
+            self.Resets = self.Resets + 1
+        end
+    end
+end
+
+function ENT:GravGunPunt(ply)
+    self:SetOwner(ply)
+    self.Reflected = true
+    if self.Resets < self.MaxResets then
         self.SpawnTime = CurTime()
         self.Bounces = 0
+        self.Resets = self.Resets + 1
     end
+    timer.Simple(0, function()
+        if IsValid(self) and IsValid(self:GetPhysicsObject()) then
+            self:GetPhysicsObject():SetVelocityInstantaneous(self:GetVelocity():GetNormalized() * self.ReflectSpeed)
+        end
+    end)
+    return true
 end

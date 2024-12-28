@@ -9,7 +9,7 @@ SWEP.Author = "8Z"
 SWEP.Description = "Super Happy Bouncy Fun Ball. For entertainment purposes only."
 SWEP.Tips = [[- The Superball's damage scales with its velocity, and it will lose bounciness over time.
 
-- Certain weapons can </color><color=255,220,120,255>redirect</color><color=150,150,150,255> the Superball, resetting its lifetime.
+- Certain weapons can launch the Superball and reset its lifetime.
 
 - Throw a ball at your feet while mid-air to </color><color=255,220,120,255>pogo</color><color=150,150,150,255>. This can be done at any vertical velocity, but only a few times.]]
 

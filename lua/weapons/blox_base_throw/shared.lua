@@ -150,9 +150,18 @@ function SWEP:Think()
     end
 end
 
+
+function SWEP:Deploy()
+    BaseClass.Deploy(self)
+    if self:GetOwner():IsPlayer() then
+        self:SetColor(self:GetOwner():GetWeaponColor():ToColor())
+    end
+    return true
+end
+
 function SWEP:Holster()
     BaseClass.Holster(self)
-
+    self:SetColor(color_white)
     self:SetNextThrowRelease(0)
     return true
 end
