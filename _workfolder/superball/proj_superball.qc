@@ -2,7 +2,7 @@
 
 $modelname "weapons\bloxxers_arsenal\projectiles\superball.mdl"
 
-$scale 2.5
+$scale 3
 $bodygroup "projectile"
 {
 	studio "proj_superball.smd"

@@ -34,13 +34,10 @@ function ENT:Initialize()
     self:PhysWake()
 
     self.SpawnTime = CurTime()
-    if (self.LifeTime or 0) > 0 then
-        self.DieTime = CurTime() + self.LifeTime
-    end
 end
 
 function ENT:Think()
-    if self.DieTime and self.DieTime <= CurTime() then
+    if self.SpawnTime + self.LifeTime < CurTime() then
         SafeRemoveEntity(self)
     end
 end

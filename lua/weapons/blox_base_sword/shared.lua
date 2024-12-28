@@ -117,6 +117,7 @@ function SWEP:PrimaryAttack()
     end
 
     local vm = owner:GetViewModel()
+    vm:SetPlaybackRate(1)
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     self:UpdateNextIdle()
     self:SetNextMeleeAttack(CurTime() + self.HitDelay)

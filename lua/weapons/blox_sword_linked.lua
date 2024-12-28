@@ -10,7 +10,7 @@ SWEP.Tips = [[- The third combo is a lunge with more reach and damage, but also 
 
 - Certain projectiles can be interacted with on hit.
 
-- Hit a surface while mid-air to </color><color=255,220,120,255>pogo</color><color=150,150,150,255>.]]
+- Hit a surface while mid-air to </color><color=255,220,120,255>pogo</color><color=150,150,150,255>. This can be done several times, and is stronger on a lunge.]]
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
@@ -21,7 +21,7 @@ SWEP.HitDistance = 96
 SWEP.HitDistanceLunge = 128
 
 SWEP.SwingCooldown = 0.3
-SWEP.SwingCooldownLunge = 0.7
+SWEP.SwingCooldownLunge = 0.66667
 
 SWEP.ComboCount = 2
 SWEP.ComboResetTime = 0.3

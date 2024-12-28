@@ -31,8 +31,21 @@ SWEP.PogoForceMin = 150
 SWEP.PogoMaxVelocity = math.huge
 SWEP.PogoMinVelocity = -math.huge
 
-SWEP.DrawSound = Sound("BloxxersArsenal.Sword.Draw")
-SWEP.ThrowSound = Sound("BloxxersArsenal.Sword.Slash")
+sound.Add({
+    name = "BloxxersArsenal.Superball.Draw",
+    sound = "bloxxers_arsenal/superball/boing.wav",
+    level = 70,
+    channel = CHAN_WEAPON,
+})
+sound.Add({
+    name = "BloxxersArsenal.Superball.Throw",
+    sound = "bloxxers_arsenal/superball/boing.wav",
+    level = 70,
+    channel = CHAN_WEAPON,
+})
+
+SWEP.DrawSound = Sound("BloxxersArsenal.Superball.Draw")
+SWEP.ThrowSound = Sound("BloxxersArsenal.Superball.Throw")
 
 SWEP.HoldType = "melee"
 
@@ -53,6 +66,8 @@ function SWEP:PrimaryAttack()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     vm:SetPlaybackRate(1)
     self:UpdateNextIdle()
+
+    self:EmitSound(self.ThrowSound)
 
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
     self:SetNextSecondaryFire(CurTime() + self.ThrowCooldown)
@@ -78,6 +93,8 @@ function SWEP:SecondaryAttack()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     vm:SetPlaybackRate(1)
     self:UpdateNextIdle()
+
+    self:EmitSound(self.ThrowSound)
 
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
     self:SetNextSecondaryFire(CurTime() + self.ThrowCooldown)
@@ -134,7 +151,7 @@ function SWEP:Think()
 end
 
 function SWEP:Holster()
-    BaseClass.Deploy(self)
+    BaseClass.Holster(self)
 
     self:SetNextThrowRelease(0)
     return true

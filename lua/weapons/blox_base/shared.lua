@@ -52,10 +52,10 @@ function SWEP:Deploy()
     return true
 end
 
-local cvar = GetConVar("sv_defaultdeployspeed")
+--local cvar = GetConVar("sv_defaultdeployspeed")
 function SWEP:Holster()
-    local vm = self:GetOwner():GetViewModel()
-    vm:SetPlaybackRate(cvar:GetFloat()) -- If we holster to a HL2 weapon, this is required to give it the proper deploy speed
+    --local vm = self:GetOwner():GetViewModel()
+    --vm:SetPlaybackRate(cvar:GetFloat()) -- If we holster to a HL2 weapon, this is required to give it the proper deploy speed
     return true
 end
 
