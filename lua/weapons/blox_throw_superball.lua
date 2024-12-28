@@ -26,3 +26,5 @@ SWEP.ThrowDelay = 0.08
 SWEP.AltThrowForce = 500
 SWEP.AltThrowDelay = 0.1
 SWEP.AltThrowAngle = Angle(60, 0, 0)
+
+SWEP.HoldType = "melee"

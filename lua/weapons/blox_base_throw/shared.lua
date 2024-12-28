@@ -4,7 +4,7 @@ SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = false
 
 SWEP.Author = "8Z"
-SWEP.Instructions = "Left Click: Throw Forwards\nReload: Toss Upwards"
+SWEP.Instructions = "Left Click: Throw Forwards\nRight Click: Toss Upwards"
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_superball.mdl"
 SWEP.WorldModel = ""
@@ -83,10 +83,6 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-end
-
-function SWEP:Reload()
-    if self:GetNextPrimaryFire() > CurTime() then return end
     if not self.AltThrow then return end
     local owner = self:GetOwner()
     owner:SetAnimation(PLAYER_ATTACK1)
@@ -158,14 +154,16 @@ end
 function SWEP:Deploy()
     BaseClass.Deploy(self)
     if self:GetOwner():IsPlayer() then
-        self:SetColor(self:GetOwner():GetWeaponColor():ToColor())
+        local clr = self:GetOwner():GetWeaponColor():ToColor()
+        self:SetColor(clr)
+        self:GetOwner():GetViewModel():SetColor(clr)
     end
     return true
 end
 
 function SWEP:Holster()
     BaseClass.Holster(self)
-    self:SetColor(color_white)
+    self:GetOwner():GetViewModel():SetColor(color_white)
     self:SetNextThrowRelease(0)
     return true
 end

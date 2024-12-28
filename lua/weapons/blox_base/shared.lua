@@ -36,6 +36,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:Deploy()
+    self:SetHoldType(self.HoldType)
     local speed = 1
     local vm = self:GetOwner():GetViewModel()
     vm:SendViewModelMatchingSequence(vm:LookupSequence("draw"))
