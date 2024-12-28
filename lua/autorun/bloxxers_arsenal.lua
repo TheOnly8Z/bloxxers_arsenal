@@ -2,6 +2,10 @@ AddCSLuaFile()
 
 BLOXXERS_ARSENAL = {}
 
+if SERVER then
+    util.AddNetworkString("blox_sp_lhikanim")
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Custom Damage Types, set in SetDamageCustom and GetDamageCustom to indicate certain interactions
 ---------------------------------------------------------------------------------------------------
@@ -231,3 +235,26 @@ local bcc = #BLOXXERS_ARSENAL.BrickColors
 function BLOXXERS_ARSENAL.RandomBrickColor()
     return BLOXXERS_ARSENAL.BrickColors[math.random(1, bcc)]
 end
+
+BLOXXERS_ARSENAL.LHIKBones = {
+    "ValveBiped.Bip01_L_UpperArm",
+    "ValveBiped.Bip01_L_Forearm",
+    "ValveBiped.Bip01_L_Wrist",
+    "ValveBiped.Bip01_L_Ulna",
+    "ValveBiped.Bip01_L_Hand",
+    "ValveBiped.Bip01_L_Finger4",
+    "ValveBiped.Bip01_L_Finger41",
+    "ValveBiped.Bip01_L_Finger42",
+    "ValveBiped.Bip01_L_Finger3",
+    "ValveBiped.Bip01_L_Finger31",
+    "ValveBiped.Bip01_L_Finger32",
+    "ValveBiped.Bip01_L_Finger2",
+    "ValveBiped.Bip01_L_Finger21",
+    "ValveBiped.Bip01_L_Finger22",
+    "ValveBiped.Bip01_L_Finger1",
+    "ValveBiped.Bip01_L_Finger11",
+    "ValveBiped.Bip01_L_Finger12",
+    "ValveBiped.Bip01_L_Finger0",
+    "ValveBiped.Bip01_L_Finger01",
+    "ValveBiped.Bip01_L_Finger02"
+}

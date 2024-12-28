@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 SWEP.PrintName = "Bloxxer's Arsenal Base Sword"
 SWEP.Base = "blox_base"
 SWEP.Category = "Bloxxer's Arsenal"
@@ -30,7 +32,7 @@ sound.Add({
     name = "BloxxersArsenal.Sword.Draw",
     sound = "bloxxers_arsenal/sword/draw.wav",
     level = 70,
-    channel = CHAN_WEAPON,
+    channel = CHAN_AUTO,
 })
 sound.Add({
     name = "BloxxersArsenal.Sword.Pogo",
@@ -58,7 +60,7 @@ SWEP.HitMaxTargets = 0
 SWEP.HitDelay = 0.1
 SWEP.HitLingerTime = 0.08
 SWEP.HitLingerTimeLunge = 0.02
-SWEP.HitForceScale = 100
+SWEP.HitForceScale = 2000
 SWEP.SwingCooldown = 0.3
 SWEP.SwingCooldownLunge = 0.75
 
@@ -69,7 +71,7 @@ SWEP.PogoLimit = 6
 SWEP.PogoForce = 250
 SWEP.PogoForceLunge = 500
 SWEP.PogoMaxVelocity = 200
-SWEP.PogoMinVelocity = -400
+SWEP.PogoMinVelocity = -800
 
 SWEP.HitCounter = 0
 
@@ -95,12 +97,40 @@ SWEP.HitEntities = {}
 
 SWEP.HoldType = "knife"
 
-local upvector = Vector(0, 0, 1)
+SWEP.OffhandUsable = true
+function SWEP:OffhandAttack(wep)
+    wep:SetNextSecondaryFire(CurTime() + 0.666667)
+    wep:SetNextOffhandEnd(CurTime() + 0.2)
+    if IsFirstTimePredicted() then
+        wep:DoLHIKAnimation(self.ViewModel, "offhand")
+        -- self:EmitSound(self.DrawSound)
+    end
 
+    self.HitEntities = {self:GetOwner()}
+    self.HitCounter = 0
+
+    self:SetNextMeleeAttack(CurTime() + 0.1)
+    self:SetNextMeleeAttackEnd(CurTime() + 0.1 + 0.08)
+end
+
+function SWEP:OffhandThink(wep)
+    local curtime = CurTime()
+    local meleetime = self:GetNextMeleeAttack()
+    local meleeendtime = self:GetNextMeleeAttackEnd()
+    if meleetime > 0 and curtime > meleetime then
+        self:DealDamage(true)
+        self:SetNextMeleeAttack(0)
+        self:EmitSound(self.SlashSound)
+    elseif meleeendtime > 0 and curtime <= meleeendtime then
+        self:DealDamage(false)
+    end
+end
+
+local upvector = Vector(0, 0, 1)
 function SWEP:SetupDataTables()
-    self:NetworkVar("Float", 0, "NextIdle")
-    self:NetworkVar("Float", 1, "NextMeleeAttack")
-    self:NetworkVar("Float", 2, "NextMeleeAttackEnd")
+    BaseClass.SetupDataTables(self)
+    self:NetworkVar("Float", 2, "NextMeleeAttack")
+    self:NetworkVar("Float", 3, "NextMeleeAttackEnd")
     self:NetworkVar("Int", 2, "Combo")
 end
 
@@ -130,12 +160,10 @@ function SWEP:PrimaryAttack()
     if anim == "lunge" then
         self:EmitSound(self.LungeSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldownLunge)
-        self:SetNextSecondaryFire(CurTime() + self.SwingCooldownLunge)
         self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
     else
         self:EmitSound(self.SlashSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldown)
-        self:SetNextSecondaryFire(CurTime() + self.SwingCooldown)
         self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
     end
 end
@@ -239,12 +267,23 @@ function SWEP:DealDamage(initial)
         end
     end
 
-    if IsValid(tr.Entity) then
+    if SERVER and IsValid(tr.Entity) then
         local phys = tr.Entity:GetPhysicsObject()
 
         if IsValid(phys) then
-            phys:ApplyForceOffset(owner:GetAimVector() * self.HitForceScale * phys:GetMass() * scale, tr.HitPos)
+            local v = phys:GetVelocity()
+            if v:Length() >= 1000 or tr.Entity.IsBloxxersProjectile then
+                tr.Entity:EmitSound("weapons/rpg/shotdown.wav", 70, 150, 0.8)
+                phys:SetVelocity(owner:GetAimVector() * v:Length())
+            else
+                phys:ApplyForceCenter(owner:GetAimVector() * self.HitForceScale * phys:GetMass() ^ 0.5 * scale)
+            end
+            if IsValid(tr.Entity:GetOwner()) then
+                tr.Entity:SetOwner(self:GetOwner())
+                tr.Entity:SetPhysicsAttacker(self, 5)
+            end
         end
+
     end
 
     if initial and SERVER then
@@ -300,37 +339,3 @@ function SWEP:Think()
         self:SetCombo(0)
     end
 end
-
-
-AddCSLuaFile()
-local searchdir = "weapons/blox_base_sword"
-
-local function autoinclude(dir)
-    local files, dirs = file.Find(searchdir .. "/*.lua", "LUA")
-
-    for _, filename in pairs(files) do
-        if filename == "shared.lua" then continue end
-        local luatype = string.sub(filename, 1, 2)
-
-        if luatype == "sv" then
-            if SERVER then
-                include(dir .. "/" .. filename)
-            end
-        elseif luatype == "cl" then
-            AddCSLuaFile(dir .. "/" .. filename)
-
-            if CLIENT then
-                include(dir .. "/" .. filename)
-            end
-        else
-            AddCSLuaFile(dir .. "/" .. filename)
-            include(dir .. "/" .. filename)
-        end
-    end
-
-    for _, path in pairs(dirs) do
-        autoinclude(dir .. "/" .. path)
-    end
-end
-
-autoinclude(searchdir)

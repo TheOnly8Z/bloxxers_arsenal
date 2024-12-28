@@ -79,3 +79,12 @@ $sequence "throw" {
 	snap
 	fps 30
 }
+
+$sequence "throw2" {
+	"anims\throw2.smd"
+	activity "ACT_VM_SECONDARYATTACK" 1
+	fadein 0.2
+	fadeout 0.2
+	snap
+	fps 30
+}

@@ -20,6 +20,10 @@ function SWEP:PrintWeaponInfo(x, y, alpha)
             str = str .. title_color .. "Controls:\n" .. text_color .. self.Instructions .. "</color>\n"
         end
 
+        if self.OffhandUsable then
+            str = str .. title_color .. "<color=150,255,150>" .. "[USABLE IN OFF-HAND]" .. "</color>\n"
+        end
+
         if self.Tips ~= "" then
             str = str .. title_color .. "\nTips:\n" .. text_color .. self.Tips .. "</color>\n"
         end

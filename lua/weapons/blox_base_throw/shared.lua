@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 SWEP.PrintName = "Bloxxer's Arsenal Base Throwing"
 SWEP.Base = "blox_base"
 SWEP.Category = "Bloxxer's Arsenal"
@@ -17,7 +19,7 @@ SWEP.ThrowEntity = "sent_ball"
 SWEP.ThrowForce = 2000
 SWEP.ThrowCooldown = 1
 SWEP.ThrowDelay = 0.1
-SWEP.ThrowOriginOffset = Vector(8, 8, 8)
+SWEP.ThrowOriginOffset = Vector(16, 16, 8)
 
 SWEP.AltThrowEntity = nil
 SWEP.AltThrow = true
@@ -50,8 +52,8 @@ SWEP.ThrowSound = Sound("BloxxersArsenal.Superball.Throw")
 SWEP.HoldType = "melee"
 
 function SWEP:SetupDataTables()
-    self:NetworkVar("Float", 0, "NextIdle")
-    self:NetworkVar("Float", 1, "NextThrowRelease")
+    BaseClass.SetupDataTables(self)
+    self:NetworkVar("Float", 2, "NextThrowRelease")
     self:NetworkVar("Bool", 0, "ThrowAlt")
 
 end
@@ -70,7 +72,6 @@ function SWEP:PrimaryAttack()
     self:EmitSound(self.ThrowSound)
 
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
-    self:SetNextSecondaryFire(CurTime() + self.ThrowCooldown)
     self:SetNextThrowRelease(CurTime() + self.ThrowDelay)
     self:SetThrowAlt(false)
 
@@ -83,11 +84,12 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if self:GetNextPrimaryFire() > CurTime() then return end
     if not self.AltThrow then return end
     local owner = self:GetOwner()
     owner:SetAnimation(PLAYER_ATTACK1)
 
-    local anim = "throw" -- TODO change
+    local anim = "throw2"
 
     local vm = owner:GetViewModel()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
@@ -97,7 +99,6 @@ function SWEP:SecondaryAttack()
     self:EmitSound(self.ThrowSound)
 
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
-    self:SetNextSecondaryFire(CurTime() + self.ThrowCooldown)
     self:SetNextThrowRelease(CurTime() + self.ThrowDelay)
     self:SetThrowAlt(true)
 end
@@ -167,37 +168,3 @@ function SWEP:Holster()
     self:SetNextThrowRelease(0)
     return true
 end
-
-
-AddCSLuaFile()
-local searchdir = "weapons/blox_base_throw"
-
-local function autoinclude(dir)
-    local files, dirs = file.Find(searchdir .. "/*.lua", "LUA")
-
-    for _, filename in pairs(files) do
-        if filename == "shared.lua" then continue end
-        local luatype = string.sub(filename, 1, 2)
-
-        if luatype == "sv" then
-            if SERVER then
-                include(dir .. "/" .. filename)
-            end
-        elseif luatype == "cl" then
-            AddCSLuaFile(dir .. "/" .. filename)
-
-            if CLIENT then
-                include(dir .. "/" .. filename)
-            end
-        else
-            AddCSLuaFile(dir .. "/" .. filename)
-            include(dir .. "/" .. filename)
-        end
-    end
-
-    for _, path in pairs(dirs) do
-        autoinclude(dir .. "/" .. path)
-    end
-end
-
-autoinclude(searchdir)

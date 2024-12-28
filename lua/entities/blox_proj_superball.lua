@@ -82,9 +82,9 @@ function ENT:PhysicsCollide(data, physobj)
 
         if hit_enemy and self.Reflected then
             -- After reflecting, the Superball can plow through weak enemies like a bowling ball!
-            timer.Simple(0.02, function()
+            timer.Simple(0, function()
                 if IsValid(self) and IsValid(physobj) and (not IsValid(ent) or ent:Health() <= 0) then
-                    physobj:SetVelocity(old_vel * 0.8)
+                    physobj:SetVelocity(old_vel * 0.95)
                 end
             end)
         elseif hit_enemy and IsValid(self:GetOwner()) then

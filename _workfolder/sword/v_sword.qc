@@ -148,3 +148,12 @@ $sequence "lunge" {
 //	snap
 	fps 45
 }
+
+$sequence "offhand" {
+	"anims\offhand.smd"
+	activity "ACT_VM_HITCENTER" 1
+	fadein 0.1
+	fadeout 0.1
+	snap
+	fps 30
+}

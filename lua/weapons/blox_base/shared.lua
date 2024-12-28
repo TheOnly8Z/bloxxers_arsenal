@@ -1,6 +1,8 @@
 SWEP.PrintName = "Bloxxer's Arsenal Base"
 SWEP.Category = "Bloxxer's Arsenal"
 
+SWEP.BloxxersArsenal = true
+
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = true
@@ -22,8 +24,11 @@ SWEP.DrawSound = ""
 
 SWEP.HoldType = "pistol"
 
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Float", 0, "NextIdle")
+    self:NetworkVar("Float", 1, "NextOffhandEnd")
+    self:NetworkVar("Entity", 0, "ActiveOffhand")
 end
 
 function SWEP:UpdateNextIdle()
@@ -35,32 +40,19 @@ function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
 end
 
-function SWEP:Deploy()
-    self:SetHoldType(self.HoldType)
-    local speed = 1
-    local vm = self:GetOwner():GetViewModel()
-    vm:SendViewModelMatchingSequence(vm:LookupSequence("draw"))
-    vm:SetPlaybackRate(speed)
-    -- self:SetNextPrimaryFire(CurTime() + vm:SequenceDuration() / speed)
-    -- self:SetNextSecondaryFire(CurTime() + vm:SequenceDuration() / speed)
-    self:UpdateNextIdle()
-    self:SetNextPrimaryFire(CurTime())
-    self:SetNextSecondaryFire(CurTime())
-    if IsFirstTimePredicted() then
-        self:EmitSound(self.DrawSound)
+function SWEP:Think()
+    if IsValid(self:GetActiveOffhand()) then
+        local offhandend = self:GetNextOffhandEnd()
+        if offhandend > 0 then
+            if offhandend > CurTime() then
+                self:GetActiveOffhand():OffhandThink(self)
+            else
+                self:SetNextOffhandEnd(0)
+                self:SetActiveOffhand(NULL)
+            end
+        end
     end
 
-    return true
-end
-
---local cvar = GetConVar("sv_defaultdeployspeed")
-function SWEP:Holster()
-    --local vm = self:GetOwner():GetViewModel()
-    --vm:SetPlaybackRate(cvar:GetFloat()) -- If we holster to a HL2 weapon, this is required to give it the proper deploy speed
-    return true
-end
-
-function SWEP:Think()
     if IsValid(self:GetOwner()) and self:GetOwner():OnGround() then
         self.PogoCounter = 0
     end

@@ -6,18 +6,18 @@ SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = true
 
 SWEP.Description = "With blood and iron."
-SWEP.Tips = [[- The third combo is a lunge with more reach and damage, but also a longer cooldown.
+SWEP.Tips = [[- Swords can </color><color=220,120,255,255>reflect</color><color=150,150,150,255> most projectiles, sending them back where they came!
 
-- Certain projectiles can be interacted with on hit.
+- Hit a surface while mid-air to </color><color=255,220,120,255>pogo</color><color=150,150,150,255>, preserving horizontal momentum.
 
-- Hit a surface while mid-air to </color><color=255,220,120,255>pogo</color><color=150,150,150,255>. This can be done several times, and is stronger on a lunge.]]
+- </color><color=255,220,120,255>Pogoing</color><color=150,150,150,255> and </color><color=220,120,255,255>reflecting</color><color=150,150,150,255> also works in the off-hand.]]
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 70
 SWEP.UseHands = true
 
-SWEP.HitDistance = 96
+SWEP.HitDistance = 72
 SWEP.HitDistanceLunge = 128
 
 SWEP.SwingCooldown = 0.3
