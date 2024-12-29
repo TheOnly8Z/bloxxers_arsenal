@@ -6,7 +6,7 @@ SWEP.FreeOffhand = true
 
 -- This is the active weapon and we are able to use offhand
 function SWEP:OffhandReady()
-    return self.FreeOffhand and self:GetNextSecondaryFire() <= CurTime()
+    return self.FreeOffhand and self:GetNextOffhandEnd() <= CurTime()
 end
 
 -- This is the offhand weapon and we are able to be used
@@ -22,16 +22,9 @@ end
 
 
 function SWEP:Reload()
-    -- Testing
-    -- if self:GetNextSecondaryFire() > CurTime() then return end
-    -- self:SetNextSecondaryFire(CurTime() + 0.5)
-    -- if IsFirstTimePredicted() then
-    --     self:DoLHIKAnimation("models/weapons/bloxxers_arsenal/v_sword.mdl", "offhand")
-    -- end
-
     if not self:OffhandReady() then return end
 
-    local wep = self:GetOwner():GetWeapon("blox_sword_linked")
+    local wep = self.OffhandWeapon --self:GetOwner():GetWeapon("blox_sword_linked")
     if IsValid(wep) and wep:CanOffhandAttack() then
         self:SetActiveOffhand(wep)
         wep:OffhandAttack(self)

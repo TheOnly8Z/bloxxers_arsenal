@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-SWEP.PrintName = "LinkedSword"
+SWEP.PrintName = "Classic Sword"
 SWEP.Base = "blox_base_sword"
 SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = true
@@ -14,7 +14,7 @@ SWEP.Tips = [[- Swords can </color><color=220,120,255,255>reflect</color><color=
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
-SWEP.ViewModelFOV = 70
+SWEP.ViewModelFOV = 80
 SWEP.UseHands = true
 
 SWEP.HitDistance = 72

@@ -17,7 +17,7 @@ DEFINE_BASECLASS(SWEP.Base)
 
 SWEP.ThrowEntity = "sent_ball"
 SWEP.ThrowForce = 2000
-SWEP.ThrowCooldown = 1
+SWEP.ThrowCooldown = 1.2
 SWEP.ThrowDelay = 0.1
 SWEP.ThrowOriginOffset = Vector(16, 16, 8)
 
