@@ -117,7 +117,6 @@ function SWEP:OffhandThink(wep)
     local curtime = CurTime()
     local meleetime = self:GetNextMeleeAttack()
     local meleeendtime = self:GetNextMeleeAttackEnd()
-    print(meleetime - curtime)
     if meleetime > 0 and curtime > meleetime then
         self:DealDamage(true)
         self:SetNextMeleeAttack(0)
