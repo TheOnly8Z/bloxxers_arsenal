@@ -82,8 +82,8 @@ SWEP.HitSizeMin = {
 }
 
 SWEP.HitSize = {
-    Min = Vector(-64, -64, -16),
-    Max = Vector(64, 64, 8)
+    Min = Vector(-32, -32, -16),
+    Max = Vector(32, 32, 8)
 }
 
 SWEP.HitSizeLunge = {
@@ -109,19 +109,20 @@ function SWEP:OffhandAttack(wep)
     self.HitEntities = {self:GetOwner()}
     self.HitCounter = 0
 
-    self:SetNextMeleeAttack(CurTime() + 0.1)
-    self:SetNextMeleeAttackEnd(CurTime() + 0.1 + 0.08)
+    self:SetNextMeleeAttack(CurTime() + self.HitDelay)
+    self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
 end
 
 function SWEP:OffhandThink(wep)
     local curtime = CurTime()
     local meleetime = self:GetNextMeleeAttack()
     local meleeendtime = self:GetNextMeleeAttackEnd()
+    print(meleetime - curtime)
     if meleetime > 0 and curtime > meleetime then
         self:DealDamage(true)
         self:SetNextMeleeAttack(0)
         self:EmitSound(self.SlashSound)
-    elseif meleeendtime > 0 and curtime <= meleeendtime then
+    elseif meleeendtime > 0 and meleetime == 0 and curtime <= meleeendtime then
         self:DealDamage(false)
     end
 end
@@ -332,7 +333,7 @@ function SWEP:Think()
     if meleetime > 0 and curtime > meleetime then
         self:DealDamage(true)
         self:SetNextMeleeAttack(0)
-    elseif meleeendtime > 0 and curtime <= meleeendtime then
+    elseif meleeendtime > 0 and meleetime == 0 and curtime <= meleeendtime then
         self:DealDamage(false)
     end
 
