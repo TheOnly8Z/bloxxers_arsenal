@@ -12,14 +12,14 @@ ENT.GravityMultiplier = 3
 ENT.Buoyancy = 0.01
 ENT.LifeTime = 6
 
-ENT.MinBounces = 5
-ENT.MaxBounces = 15
+ENT.MinBounces = 3
+ENT.MaxBounces = 10
 ENT.BounceSpeedMax = 0.9
 ENT.BounceSpeedMin = 0.5
 
 ENT.DamageSpeedThreshold = 1200
-ENT.Damage = 50
-ENT.DamageMin = 20
+ENT.Damage = 25
+ENT.DamageMin = 10
 
 ENT.ReflectSpeed = 2000
 
@@ -53,22 +53,26 @@ function ENT:PhysicsCollide(data, physobj)
     -- When superballs hit each other, the older one gets refreshed
     if ent:GetClass() == self:GetClass() then
         self.SpawnTime = math.max(self.SpawnTime, ent.SpawnTime)
+        self.Bounces = math.min(self.Bounces, ent.Bounces)
     end
 
     if not self:IsPlayerHolding() and data.Speed > 60 then
-        local lifedelta = math.Clamp((CurTime() - self.SpawnTime) / self.LifeTime, 0, 1)
+        local lifedelta = math.Clamp(math.max(self.Bounces - self.MinBounces, 0) / self.MaxBounces, 0, 1) --math.Clamp((CurTime() - self.SpawnTime) / self.LifeTime, 0, 1)
 
-        local pitch = Lerp(data.Speed / self.DamageSpeedThreshold, 90, 100)
+        local pitch = Lerp(lifedelta, 100, 90)
         sound.Play(BounceSound, self:GetPos(), 75, math.random(pitch - 5, pitch + 5), math.Clamp(data.Speed / 1000, 0, 0.9))
 
         if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC() or ent:Health() > 0) then
             local dmg = DamageInfo()
             dmg:SetAttacker(self:GetOwner())
             dmg:SetInflictor(self)
-            dmg:SetDamage(Lerp((data.Speed / self.DamageSpeedThreshold) ^ 0.5, self.DamageMin, self.Damage))
+            dmg:SetDamage(Lerp(lifedelta, self.Damage, self.DamageMin))
             dmg:SetDamageType(DMG_GENERIC)
             dmg:SetDamagePosition(data.HitPos)
-            dmg:SetDamageForce(data.OurOldVelocity * 10)
+            dmg:SetDamageForce(data.OurOldVelocity * 30)
+
+            if not ent:IsPlayer() then dmg:ScaleDamage(2) end
+
             ent:TakeDamageInfo(dmg)
             hit_enemy = true
         end
@@ -112,10 +116,10 @@ function ENT:PhysicsCollide(data, physobj)
         self.Bounces = self.Bounces + 1
         physobj:SetVelocity(new_dir * last_speed * speed_mult)
     end
-    -- if self.Bounces >= self.MaxBounces and data.Speed <= 100 then
-    --     SafeRemoveEntity(self)
-    --     return
-    -- end
+    if self.Bounces >= self.MaxBounces and data.Speed <= 128 then
+        SafeRemoveEntity(self)
+        return
+    end
 
 end
 

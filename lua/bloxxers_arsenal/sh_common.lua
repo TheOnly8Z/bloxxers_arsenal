@@ -10,6 +10,10 @@ BLOXXERS_ARSENAL.CDMG_ACTIVE = 32768
 -- This damage is capable of reflecting projectiles (e.g. Sword hitting Superball)
 BLOXXERS_ARSENAL.CDMG_REFLECT = 1
 
+-- This damage cannot hurt its attacker, and will instead launch them (e.g. Timebomb/Rocket explosions)
+BLOXXERS_ARSENAL.CDMG_BLASTJUMP = 2
+
+
 BLOXXERS_ARSENAL.LHIKBones = {
     "ValveBiped.Bip01_L_UpperArm",
     "ValveBiped.Bip01_L_Forearm",

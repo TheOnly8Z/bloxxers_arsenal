@@ -7,4 +7,6 @@ ENT.PhysicsMaterial = nil
 ENT.PhysicsSphere = nil
 
 ENT.GravityMultiplier = 1
-ENT.LifeTime = 5
+ENT.LifeTime = 0
+ENT.Mass = nil
+ENT.Drag = nil

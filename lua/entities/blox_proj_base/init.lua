@@ -30,6 +30,12 @@ function ENT:Initialize()
     if phys:IsValid() then
         phys:EnableGravity(false)
         phys:SetBuoyancyRatio(self.Buoyancy)
+        if self.Mass then
+            phys:SetMass(self.Mass)
+        end
+        if self.Drag then
+            phys:SetDragCoefficient(self.Drag)
+        end
     end
     self:PhysWake()
 
@@ -37,7 +43,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-    if self.SpawnTime + self.LifeTime < CurTime() then
+    if self.LifeTime > 0 and self.SpawnTime + self.LifeTime < CurTime() then
         SafeRemoveEntity(self)
     end
 end

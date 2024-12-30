@@ -99,7 +99,7 @@ function SWEP:SecondaryAttack()
     self:EmitSound(self.ThrowSound)
 
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
-    self:SetNextThrowRelease(CurTime() + self.ThrowDelay)
+    self:SetNextThrowRelease(CurTime() + self.AltThrowDelay)
     self:SetThrowAlt(true)
 
     owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_SLAM)
