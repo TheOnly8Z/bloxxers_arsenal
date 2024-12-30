@@ -1,19 +1,8 @@
-local function qerp(delta, a, b)
-    local qdelta = -(delta ^ 2) + (delta * 2)
-
-    qdelta = math.Clamp(qdelta, 0, 1)
-
-    return Lerp(qdelta, a, b)
-end
-
 SWEP.LHIKModel = nil
 SWEP.LHIKAnimation_IsIdle = false
 SWEP.LHIKAnimation = nil
 SWEP.LHIKAnimationStart = 0
 SWEP.LHIKAnimationTime = 0
-
-SWEP.LHIKCamAng = Angle(0, 0, 0)
-SWEP.LHIKGunAng = Angle(0, 0, 0)
 
 function SWEP:DoLHIKAnimation(model, key, time, spbitch)
     if not IsValid(self:GetOwner()) then return end
@@ -95,8 +84,6 @@ end
 
 SWEP.LHIKDelta = {}
 SWEP.LHIKDeltaAng = {}
-SWEP.ViewModel_Hit = Vector(0, 0, 0)
-SWEP.Customize_Hide = 0
 
 function SWEP:GetLHIKAnim()
     local cyc = (UnPredictedCurTime() - self.LHIKAnimationStart) / self.LHIKAnimationTime

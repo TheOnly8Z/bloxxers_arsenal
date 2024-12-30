@@ -49,7 +49,7 @@ sound.Add({
 SWEP.DrawSound = Sound("BloxxersArsenal.Superball.Draw")
 SWEP.ThrowSound = Sound("BloxxersArsenal.Superball.Throw")
 
-SWEP.HoldType = "melee"
+SWEP.HoldType = "grenade"
 
 function SWEP:SetupDataTables()
     BaseClass.SetupDataTables(self)
@@ -60,7 +60,6 @@ end
 
 function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
-    owner:SetAnimation(PLAYER_ATTACK1)
 
     local anim = "throw"
 
@@ -75,6 +74,8 @@ function SWEP:PrimaryAttack()
     self:SetNextThrowRelease(CurTime() + self.ThrowDelay)
     self:SetThrowAlt(false)
 
+    owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_GRENADE)
+
     if IsFirstTimePredicted() and self:AllowPogo() then
         if SERVER then
             self:GetOwner():SetVelocity(Vector(0, 0, math.min(0, self:GetOwner():GetVelocity().z) * -1 + Lerp((self.PogoCounter / self.PogoLimit) ^ 0.5, self.PogoForce, self.PogoForceMin)))
@@ -87,7 +88,6 @@ function SWEP:SecondaryAttack()
     if self:GetNextPrimaryFire() > CurTime() then return end
     if not self.AltThrow then return end
     local owner = self:GetOwner()
-    owner:SetAnimation(PLAYER_ATTACK1)
 
     local anim = "throw2"
 
@@ -101,6 +101,8 @@ function SWEP:SecondaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.ThrowCooldown)
     self:SetNextThrowRelease(CurTime() + self.ThrowDelay)
     self:SetThrowAlt(true)
+
+    owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_SLAM)
 end
 
 function SWEP:ThrowProjectile()

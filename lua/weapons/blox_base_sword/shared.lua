@@ -137,7 +137,6 @@ end
 
 function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
-    owner:SetAnimation(PLAYER_ATTACK1)
 
     local anim = "slash1"
     if self:GetCombo() == 1 then
@@ -161,10 +160,12 @@ function SWEP:PrimaryAttack()
         self:EmitSound(self.LungeSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldownLunge)
         self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
+        owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_KNIFE)
     else
         self:EmitSound(self.SlashSound)
         self:SetNextPrimaryFire(CurTime() + self.SwingCooldown)
         self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
+        owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE)
     end
 end
 
