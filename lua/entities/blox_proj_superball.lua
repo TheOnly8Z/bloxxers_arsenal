@@ -18,8 +18,8 @@ ENT.BounceSpeedMax = 0.9
 ENT.BounceSpeedMin = 0.5
 
 ENT.DamageSpeedThreshold = 1200
-ENT.Damage = 25
-ENT.DamageMin = 10
+ENT.Damage = 50
+ENT.DamageMin = 25
 
 ENT.ReflectSpeed = 2000
 
@@ -70,8 +70,6 @@ function ENT:PhysicsCollide(data, physobj)
             dmg:SetDamageType(DMG_GENERIC)
             dmg:SetDamagePosition(data.HitPos)
             dmg:SetDamageForce(data.OurOldVelocity * 30)
-
-            if not ent:IsPlayer() then dmg:ScaleDamage(2) end
 
             ent:TakeDamageInfo(dmg)
             hit_enemy = true

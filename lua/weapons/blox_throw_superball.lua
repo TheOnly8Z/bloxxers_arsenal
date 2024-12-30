@@ -22,7 +22,7 @@ SWEP.Slot = 3
 
 SWEP.ThrowEntity = "blox_proj_superball"
 SWEP.ThrowForce = 2000
-SWEP.ThrowCooldown = 1.1
+SWEP.ThrowCooldown = 1.5
 SWEP.ThrowDelay = 0.08
 
 SWEP.AltThrowForce = 750

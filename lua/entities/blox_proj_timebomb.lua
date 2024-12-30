@@ -8,7 +8,7 @@ ENT.Model = "models/weapons/bloxxers_arsenal/projectiles/superball.mdl"
 ENT.PhysicsMaterial = "plastic"
 ENT.PhysicsSphere = 15
 
-ENT.Mass = 20
+ENT.Mass = 10
 ENT.GravityMultiplier = 2
 ENT.Buoyancy = 0
 ENT.Drag = 3
@@ -23,7 +23,7 @@ ENT.TickCount = 0
 ENT.Color1 = Color(27, 42, 53) -- Black
 ENT.Color2 = Color(196, 40, 28) -- Bright red
 
-ENT.ReflectSpeed = 1500
+ENT.ReflectSpeed = 1000
 
 function ENT:Initialize()
     BaseClass.Initialize(self)
