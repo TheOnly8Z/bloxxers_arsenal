@@ -25,7 +25,7 @@ function SWEP:Reload()
     if not self:OffhandReady() then return end
 
     local wep = self.OffhandWeapon --self:GetOwner():GetWeapon("blox_sword_linked")
-    if IsValid(wep) and wep:CanOffhandAttack() then
+    if IsValid(wep) and wep ~= self and wep:CanOffhandAttack() then
         self:SetActiveOffhand(wep)
         wep:OffhandAttack(self)
     end

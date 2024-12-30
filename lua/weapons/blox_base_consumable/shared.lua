@@ -88,6 +88,7 @@ function SWEP:ConsumeEffect()
 end
 
 function SWEP:Holster()
+    if self:GetNextConsumableEffect() > CurTime() then return false end
     BaseClass.Holster(self)
     self:SetNextConsumableEffect(0)
     return true

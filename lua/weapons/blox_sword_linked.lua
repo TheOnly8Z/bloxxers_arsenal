@@ -27,5 +27,5 @@ SWEP.ComboCount = 2
 SWEP.ComboResetTime = 0.3
 
 SWEP.HitMaxTargets = 1
-SWEP.HitDamage = 30
-SWEP.ComboDamage = 60
+SWEP.HitDamage = 25
+SWEP.ComboDamage = 50

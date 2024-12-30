@@ -18,9 +18,11 @@ SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 80
 SWEP.UseHands = true
 
+SWEP.Slot = 3
+
 SWEP.ThrowEntity = "blox_proj_superball"
 SWEP.ThrowForce = 2000
-SWEP.ThrowCooldown = 1
+SWEP.ThrowCooldown = 1.1
 SWEP.ThrowDelay = 0.08
 
 SWEP.AltThrowForce = 750

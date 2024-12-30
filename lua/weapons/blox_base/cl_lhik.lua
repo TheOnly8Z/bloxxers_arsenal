@@ -238,7 +238,9 @@ end
 
 function SWEP:PreDrawViewModel(vm)
     if not vm then return end
-    self:DoLHIK()
+    if self:GetNextOffhandEnd() >= CurTime() then
+        self:DoLHIK()
+    end
 end
 
 net.Receive("blox_sp_lhikanim", function(len, ply)

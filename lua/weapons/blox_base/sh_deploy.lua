@@ -17,9 +17,18 @@ function SWEP:Deploy()
         self:GetOwner().LastBloxxersSWEP = self
     end
 
+    if IsValid(self.LHIKModel) then
+        self.LHIKModel:Remove()
+        self.LHIKModel = nil
+    end
+
     return true
 end
 
 function SWEP:Holster()
+    if IsValid(self.LHIKModel) then
+        self.LHIKModel:Remove()
+        self.LHIKModel = nil
+    end
     return true
 end

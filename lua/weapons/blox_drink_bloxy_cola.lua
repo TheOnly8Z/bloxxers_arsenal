@@ -16,6 +16,8 @@ SWEP.WorldModel = ""
 SWEP.ViewModelFOV = 80
 SWEP.UseHands = true
 
+SWEP.Slot = 5
+
 SWEP.ConsumeDelay = 2 -- synced to the gulp sound
 SWEP.UseDelay = 4
 

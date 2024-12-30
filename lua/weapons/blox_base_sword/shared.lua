@@ -63,6 +63,7 @@ SWEP.HitLingerTimeLunge = 0.02
 SWEP.HitForceScale = 2000
 SWEP.SwingCooldown = 0.3
 SWEP.SwingCooldownLunge = 0.75
+SWEP.SwingCooldownOffhand = 0.666667
 
 SWEP.ComboCount = 2
 SWEP.ComboResetTime = 0.3
@@ -99,8 +100,7 @@ SWEP.HoldType = "knife"
 
 SWEP.OffhandUsable = true
 function SWEP:OffhandAttack(wep)
-    wep:SetNextSecondaryFire(CurTime() + 0.666667)
-    wep:SetNextOffhandEnd(CurTime() + 0.2)
+    wep:SetNextOffhandEnd(CurTime() + self.SwingCooldownOffhand)
     if IsFirstTimePredicted() then
         wep:DoLHIKAnimation(self.ViewModel, "offhand")
         -- self:EmitSound(self.DrawSound)
