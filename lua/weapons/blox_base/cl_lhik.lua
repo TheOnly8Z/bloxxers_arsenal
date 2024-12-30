@@ -84,6 +84,7 @@ end
 
 SWEP.LHIKDelta = {}
 SWEP.LHIKDeltaAng = {}
+SWEP.Customize_Hide = 0
 
 function SWEP:GetLHIKAnim()
     local cyc = (UnPredictedCurTime() - self.LHIKAnimationStart) / self.LHIKAnimationTime
