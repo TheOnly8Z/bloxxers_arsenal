@@ -64,6 +64,7 @@ function ENT:Detonate()
     dmginfo:SetInflictor(self)
     dmginfo:SetDamageCustom(BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_BLASTJUMP)
     dmginfo:SetDamagePosition(self:GetPos())
+    dmginfo:SetDamageBonus(math.random(18, 24)) -- self damage
     util.BlastDamageInfo(dmginfo, self:GetPos(), self.Radius)
 
     self:Remove()

@@ -13,7 +13,7 @@ ENT.Buoyancy = 0.01
 ENT.LifeTime = 6
 
 ENT.MinBounces = 3
-ENT.MaxBounces = 10
+ENT.MaxBounces = 12
 ENT.BounceSpeedMax = 0.9
 ENT.BounceSpeedMin = 0.5
 
@@ -114,7 +114,7 @@ function ENT:PhysicsCollide(data, physobj)
         self.Bounces = self.Bounces + 1
         physobj:SetVelocity(new_dir * last_speed * speed_mult)
     end
-    if self.Bounces >= self.MaxBounces and data.Speed <= 128 then
+    if self.Bounces >= self.MaxBounces and data.Speed <= 96 then
         SafeRemoveEntity(self)
         return
     end
