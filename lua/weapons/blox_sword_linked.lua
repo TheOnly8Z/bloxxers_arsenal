@@ -19,6 +19,7 @@ SWEP.UseHands = true
 
 SWEP.HitDistance = 72
 SWEP.HitDistanceLunge = 128
+SWEP.HitDelay = 0.05
 
 SWEP.SwingCooldown = 0.3
 SWEP.SwingCooldownLunge = 0.66667
