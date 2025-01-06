@@ -88,10 +88,11 @@ $sequence "reload" {
 	fps 30
 }
 
-//$sequence "shoot_then_reload" {
-//	"anims\shoot_reload.smd"
-//	activity "ACT_VM_RELOAD" 1
-//	fadein 0.1
-//	fadeout 0.2
-//	fps 30
-//}
+$sequence "shoot_then_reload" {
+	"anims\shoot_reload.smd"
+	activity "ACT_VM_PRIMARYATTACK" 1
+	fadein 0
+	fadeout 0.1
+	snap
+	fps 30
+}
