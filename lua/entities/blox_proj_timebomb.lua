@@ -31,6 +31,14 @@ function ENT:Initialize()
     self.NextTick = CurTime() + self.TickInterval
 end
 
+function ENT:PhysicsCollide(data, physobj)
+	local ent = data.HitEntity
+	
+	if ent:GetClass() == "blox_proj_paintball" then
+		self:Detonate()
+	end
+end
+
 function ENT:Think()
     BaseClass.Think(self)
     if SERVER and self.NextTick < CurTime() then
