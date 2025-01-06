@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/debug/debugwhite"
+	"$surfaceprop" "plastic"
+	"$bumpmap" "models/weapons/bloxxers_arsenal/plastic_n" // models/weapons/bloxxers_arsenal/plastic_n
+
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/debug/debugwhite"
+	"$normalmapalphaenvmapmask" "1"
+	"$envmapcontrast" "1"
+	"$envmaptint" "[1 1 1]"
+	"$envmapsaturation" "1"
+	"$envmaplightscale" "1"
+
+// what do???
+	"$phong"     "1"
+	"$halflambert" "1"
+ 	"$phongexponent"   "60"
+ 	"$phongboost"   "2"
+ 	"$phongfresnelranges"   "[.5 .8 1]"
+}
