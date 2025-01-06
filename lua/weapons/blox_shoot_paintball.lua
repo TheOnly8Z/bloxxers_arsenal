@@ -26,4 +26,6 @@ SWEP.ShootCooldown = 0.6
 SWEP.ShootDelay = 0
 SWEP.ShootOriginOffset = Vector(0, 20, 0)
 
+SWEP.PogoLimit = 0
+
 SWEP.HoldType = "pistol"
