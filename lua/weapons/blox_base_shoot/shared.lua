@@ -21,12 +21,14 @@ SWEP.ShootForce = 2000
 SWEP.ShootCooldown = 0.8
 SWEP.ShootDelay = 0
 SWEP.ShootOriginOffset = Vector(16, 16, 8)
+SWEP.ProjectileAngles = Angle()
+SWEP.ShootCorrectionTrace = true
 
 SWEP.AltShootEntity = nil
 SWEP.AltShoot = false
 SWEP.AltShootForce = 500
-SWEP.AltShootDelay = 0.1
-SWEP.AltShootAngle = Angle(0, 0, 0)
+SWEP.AltShootDelay = 0
+SWEP.AltShootCooldown = nil
 
 SWEP.PogoLimit = 3
 SWEP.PogoForce = 500
@@ -99,7 +101,7 @@ function SWEP:SecondaryAttack()
 
     self:EmitSound(self.ShootSound)
 
-    self:SetNextPrimaryFire(CurTime() + self.ShootCooldown)
+    self:SetNextPrimaryFire(CurTime() + (self.AltShootCooldown or self.ShootCooldown))
     self:SetNextShootDelay(CurTime() + self.AltShootDelay)
     self:SetShootAlt(true)
 
@@ -115,7 +117,8 @@ function SWEP:ShootProjectile()
     if not IsValid(proj) then return end
 
     local origin = owner:GetShootPos()
-    local ang = owner:GetAimVector():Angle()
+    local aimang = owner:GetAimVector():Angle()
+    local ang = Angle(aimang)
 
     if self.ShootOriginOffset then
         origin:Add(ang:Right() * self.ShootOriginOffset.x)
@@ -123,21 +126,35 @@ function SWEP:ShootProjectile()
         origin:Add(ang:Up() * self.ShootOriginOffset.z)
     end
 
+    if self.ShootCorrectionTrace then
+        local tr = util.TraceLine({
+            start = origin,
+            endpos = owner:GetShootPos() + aimang:Forward() * 4000,
+            filter = {self, self:GetOwner()},
+            mask = MASK_SOLID
+        })
+        if tr.Hit then
+            aimang = tr.Normal:Angle()
+        end
+    end
+
+    if self.ProjectileAngles then
+        ang:RotateAroundAxis(aimang:Right(), self.ProjectileAngles.p)
+        ang:RotateAroundAxis(aimang:Forward(), self.ProjectileAngles.y)
+        ang:RotateAroundAxis(aimang:Up(), self.ProjectileAngles.r)
+    end
+
+
     proj:SetPos(origin)
+    proj:SetAngles(ang)
+    proj.ProjectileAngle = aimang:Forward()
     proj:SetOwner(owner)
     proj:Spawn()
 
     if alt then
-        if self.AltShootAngle then
-            local ang2 = Angle(ang)
-            ang.p = 0
-            ang:RotateAroundAxis(ang2:Right(), self.AltShootAngle.p)
-            ang:RotateAroundAxis(ang2:Forward(), self.AltShootAngle.y)
-            ang:RotateAroundAxis(ang2:Up(), self.AltShootAngle.r)
-        end
-        proj:GetPhysicsObject():SetVelocity(ang:Forward() * self.AltShootForce)
+        proj:GetPhysicsObject():SetVelocity(aimang:Forward() * self.AltShootForce)
     else
-        proj:GetPhysicsObject():SetVelocity(owner:GetAimVector() * self.ShootForce)
+        proj:GetPhysicsObject():SetVelocity(aimang:Forward() * self.ShootForce)
     end
 end
 

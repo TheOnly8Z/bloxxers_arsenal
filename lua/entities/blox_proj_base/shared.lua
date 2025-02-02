@@ -3,6 +3,9 @@ ENT.PrintName = "Bloxxer's Arsenal Base Projectile"
 
 ENT.IsBloxxersProjectile = true
 
+ENT.Model = ""
+ENT.Material = nil
+
 ENT.PhysicsMaterial = nil
 ENT.PhysicsSphere = nil
 

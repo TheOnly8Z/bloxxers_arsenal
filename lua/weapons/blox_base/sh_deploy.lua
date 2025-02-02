@@ -20,7 +20,7 @@ function SWEP:Deploy()
             for i = 0, BLOXXERS_ARSENAL.MAX_OFFHAND_BINDS - 1 do
                 local offhand = self:GetOwner():Blox_GetOffhandClass(i)
                 if not offhand then
-                    self:GetOwner():Blox_SetOffhandClass(self:GetClass())
+                    self:GetOwner():Blox_SetOffhandClass(i, self:GetClass())
                     break
                 elseif offhand == self:GetClass() then
                     break

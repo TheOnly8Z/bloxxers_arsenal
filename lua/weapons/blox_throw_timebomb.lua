@@ -8,9 +8,9 @@ SWEP.Spawnable = true
 SWEP.Author = "8Z"
 SWEP.Instructions = "Left Click: Toss\nRight Click: Place"
 SWEP.Description = "Tick tick boom boom!"
-SWEP.Tips = [[- The Timebomb is powerful but doesn't go places by itself. Consider nudging it with something else.
+SWEP.Tips = [[- The Timebomb is powerful but impractical to use alone. Try hitting the bomb with your other weapons!
 
-- You can </color><color=255,220,120,255>blast jump</color><color=150,150,150,255> using your own Timebombs, taking minor self damage and launching very far.]]
+- You can </color><color=255,220,120,255>blast jump</color><color=150,150,150,255> using your own Timebombs, taking some self damage and launching very far.]]
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_timebomb.mdl"
 SWEP.WorldModel = ""

@@ -9,6 +9,9 @@ include("shared.lua")
 -- Called when the projectile receives damage marked as reflecting
 function ENT:OnReflect(dmg) end
 
+-- Called when the projectile receives damage marked as detonating
+function ENT:OnComboDetonate(dmg) end
+
 
 ---------------------------------------------------------------------
 -- End of functions to implement
@@ -16,6 +19,9 @@ function ENT:OnReflect(dmg) end
 
 function ENT:Initialize()
     self:SetModel(self.Model)
+    if self.Material then
+        self:SetMaterial(self.Material)
+    end
 
     if self.PhysicsSphere then
         self:PhysicsInitSphere(self.PhysicsSphere, self.PhysicsMaterial)
@@ -55,8 +61,18 @@ function ENT:PhysicsUpdate(phys)
 end
 
 function ENT:OnTakeDamage(dmg)
+    local cancel_damage = false
     if bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT then
         self:OnReflect(dmg)
-        return 0
+        cancel_damage = true
     end
+
+    if bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_DETONATE) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_DETONATE then
+        self:OnComboDetonate(dmg, bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_BLASTCOMBO) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_BLASTCOMBO)
+        cancel_damage = true
+    end
+
+    if cancel_damage then return 0 end
+
+    self:TakePhysicsDamage(dmg)
 end

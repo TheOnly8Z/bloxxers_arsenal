@@ -13,6 +13,12 @@ BLOXXERS_ARSENAL.CDMG_REFLECT = 1
 -- This damage cannot hurt its attacker, and will instead launch them (e.g. Timebomb/Rocket explosions)
 BLOXXERS_ARSENAL.CDMG_BLASTJUMP = 2
 
+-- This damage will detonate explosives like Timebombs
+BLOXXERS_ARSENAL.CDMG_DETONATE = 4
+
+-- This damage will cause Timebombs to create an explosive combo
+BLOXXERS_ARSENAL.CDMG_BLASTCOMBO = 8
+
 
 BLOXXERS_ARSENAL.LHIKBones = {
     "ValveBiped.Bip01_L_UpperArm",
