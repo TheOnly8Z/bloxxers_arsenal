@@ -18,6 +18,10 @@ SWEP.PogoCounter = 0
 SWEP.PogoMaxVelocity = 200
 SWEP.PogoMinVelocity = -400
 
+SWEP.AmmoRegen = false
+SWEP.AmmoRegenInterval = 1
+SWEP.AmmoRegenAmount = 1
+
 SWEP.DrawAmmo = false
 
 SWEP.DrawSound = ""
@@ -38,6 +42,18 @@ end
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
+
+    if SERVER and self.AmmoRegen then
+        local t = "bloxxers_arsenal_regen_" .. self:EntIndex()
+        timer.Create(t, self.AmmoRegenInterval, 0, function()
+            if not IsValid(self) then
+                timer.Remove(t)
+                return
+            end
+            if self:GetNextPrimaryFire() > CurTime() then return end
+            self:SetClip1(math.min(self:GetMaxClip1(), self:Clip1() + self.AmmoRegenAmount))
+        end)
+    end
 end
 
 function SWEP:Think()

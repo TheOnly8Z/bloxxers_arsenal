@@ -4,6 +4,19 @@ SWEP.OffhandUsable = false
 -- Ability to use other weapons in the offhand while this is the active weapon
 SWEP.FreeOffhand = true
 
+SWEP.OffhandShowClip = false
+SWEP.OffhandShowClipPercentage = false
+
+SWEP.OffhandShowCooldown = false
+function SWEP:GetHUDCooldownFraction(wep)
+    return 0 --math.max(0, wep:GetNextOffhandEnd() - CurTime()) / 1
+end
+
+SWEP.OffhandShowClip = false
+function SWEP:GetHUDClip(wep)
+    return self:Clip1()
+end
+
 -- This is the active weapon and we are able to use offhand
 function SWEP:OffhandReady()
     return self.FreeOffhand and self:GetNextOffhandEnd() <= CurTime()
@@ -22,13 +35,13 @@ end
 
 
 function SWEP:Reload()
-    if not self:OffhandReady() then return end
+    -- if not self:OffhandReady() then return end
 
-    local wep = self.OffhandWeapon --self:GetOwner():GetWeapon("blox_sword_linked")
-    if IsValid(wep) and wep ~= self and wep:CanOffhandAttack() then
-        self:SetActiveOffhand(wep)
-        wep:OffhandAttack(self)
-    end
+    -- local wep = self.OffhandWeapon --self:GetOwner():GetWeapon("blox_sword_linked")
+    -- if IsValid(wep) and wep ~= self and wep:CanOffhandAttack() then
+    --     self:SetActiveOffhand(wep)
+    --     wep:OffhandAttack(self)
+    -- end
 end
 
 

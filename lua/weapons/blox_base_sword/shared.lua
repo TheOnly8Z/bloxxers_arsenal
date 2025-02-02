@@ -6,7 +6,7 @@ SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = false
 
 SWEP.Author = "8Z"
-SWEP.Instructions = "Left Click: Swing"
+SWEP.Instructions = "Left Click: Slash/Slash/Lunge\nOffhand: Quick Slash"
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_sword.mdl"
 SWEP.WorldModel = ""
@@ -91,6 +91,11 @@ SWEP.HitSizeLunge = {
     Max = Vector(10, 10, 8)
 }
 
+SWEP.HitSizeOffhand = {
+    Min = Vector(-32, -32, -16),
+    Max = Vector(32, 32, 8)
+}
+
 SWEP.HitDamage = 30
 SWEP.ComboDamage = 60
 
@@ -109,8 +114,8 @@ function SWEP:OffhandAttack(wep)
     self.HitEntities = {self:GetOwner()}
     self.HitCounter = 0
 
-    self:SetNextMeleeAttack(CurTime() + self.HitDelay)
-    self:SetNextMeleeAttackEnd(CurTime() + self.HitDelay + self.HitLingerTime)
+    self:SetNextMeleeAttack(CurTime())
+    self:SetNextMeleeAttackEnd(CurTime() + self.HitLingerTime)
 end
 
 function SWEP:OffhandThink(wep)
@@ -118,12 +123,21 @@ function SWEP:OffhandThink(wep)
     local meleetime = self:GetNextMeleeAttack()
     local meleeendtime = self:GetNextMeleeAttackEnd()
     if meleetime > 0 and curtime > meleetime then
-        self:DealDamage(true)
+        self:DealDamage(true, true)
         self:SetNextMeleeAttack(0)
         self:EmitSound(self.SlashSound)
     elseif meleeendtime > 0 and meleetime == 0 and curtime <= meleeendtime then
-        self:DealDamage(false)
+        self:DealDamage(false, true)
     end
+end
+
+SWEP.OffhandShowCooldown = true
+function SWEP:GetHUDCooldownFraction(wep)
+    if wep:GetActiveOffhand() ~= self then return 0 end
+    if self:GetNextMeleeAttackEnd() > CurTime() then
+        return 1 - (self:GetNextMeleeAttackEnd() - CurTime()) / self.HitLingerTime
+    end
+    return (wep:GetNextOffhandEnd() - CurTime() + self.HitLingerTime) / (self.SwingCooldownOffhand - self.HitLingerTime)
 end
 
 local upvector = Vector(0, 0, 1)
@@ -174,7 +188,7 @@ end
 
 local phys_pushscale = GetConVar("phys_pushscale")
 
-function SWEP:DealDamage(initial)
+function SWEP:DealDamage(initial, offhand)
     local owner = self:GetOwner()
     local anim = self:GetSequenceName(owner:GetViewModel():GetSequence())
 
@@ -182,6 +196,10 @@ function SWEP:DealDamage(initial)
 
     local dist = anim == "lunge" and self.HitDistanceLunge or self.HitDistance
     local hull = anim == "lunge" and self.HitSizeLunge or self.HitSize
+    if offhand then
+        dist = self.HitDistance
+        hull = self.HitSizeOffhand
+    end
 
     -- Initial hit is also a hull trace so it does not trigger hitgroup multipliers
     local tr = util.TraceHull({
@@ -226,8 +244,10 @@ function SWEP:DealDamage(initial)
             dmginfo:SetDamageType(DMG_SLASH) -- this seems to significantly amplify push force on props
         end
         local dmg = self.HitDamage
-        if anim == "slash2" then
-            dmginfo:SetDamageForce(owner:GetRight() * 9000 * scale + owner:GetForward() * 9000 * scale) -- Yes we need those specific numbers
+        if offhand then
+            dmginfo:SetDamageForce(owner:GetUp() * 2000 * scale + owner:GetForward() * 9000 * scale)
+        elseif anim == "slash2" then
+            dmginfo:SetDamageForce(owner:GetRight() * 9000 * scale + owner:GetForward() * 9000 * scale)
         elseif anim == "slash1" then
             dmginfo:SetDamageForce(owner:GetRight() * -9000 * scale + owner:GetForward() * 9000 * scale)
         elseif anim == "lunge" then

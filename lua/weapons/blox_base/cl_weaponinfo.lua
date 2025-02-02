@@ -21,7 +21,7 @@ function SWEP:PrintWeaponInfo(x, y, alpha)
         end
 
         if self.OffhandUsable then
-            str = str .. title_color .. "<color=150,255,150>" .. "[USABLE IN OFF-HAND]" .. "</color>\n"
+            str = str .. text_color .. "<color=150,255,150>[Hold C: Set Offhand bind]</color>\n"
         end
 
         if self.Tips ~= "" then

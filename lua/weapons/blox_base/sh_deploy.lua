@@ -15,6 +15,18 @@ function SWEP:Deploy()
             self.OffhandWeapon = self:GetOwner().LastBloxxersSWEP
         end
         self:GetOwner().LastBloxxersSWEP = self
+
+        if self.OffhandUsable then
+            for i = 0, BLOXXERS_ARSENAL.MAX_OFFHAND_BINDS - 1 do
+                local offhand = self:GetOwner():Blox_GetOffhandClass(i)
+                if not offhand then
+                    self:GetOwner():Blox_SetOffhandClass(self:GetClass())
+                    break
+                elseif offhand == self:GetClass() then
+                    break
+                end
+            end
+        end
     end
 
     if IsValid(self.LHIKModel) then

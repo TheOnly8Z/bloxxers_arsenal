@@ -31,14 +31,21 @@ sound.Add({
 SWEP.DrawSound = Sound("BloxxersArsenal.BloxyCola.Draw")
 SWEP.UseSound = Sound("BloxxersArsenal.BloxyCola.Use")
 
+SWEP.ConsumeMinClip = -1
 SWEP.ConsumeDelay = 0.5
 SWEP.UseDelay = 3
+
+SWEP.OffhandShowCooldown = false
+function SWEP:GetHUDCooldownFraction(wep)
+    return math.max(0, wep:GetNextOffhandEnd() - CurTime()) / self.UseDelay
+end
 
 SWEP.HoldType = "slam"
 
 SWEP.OffhandUsable = true
 function SWEP:OffhandAttack(wep)
     wep:SetNextOffhandEnd(CurTime() + self.UseDelay)
+    self:SetNextPrimaryFire(CurTime() + self.UseDelay)
     self:SetNextConsumableEffect(CurTime() + self.ConsumeDelay)
     if IsFirstTimePredicted() then
         wep:DoLHIKAnimation(self.ViewModel, "offhand")
@@ -62,6 +69,7 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:PrimaryAttack()
+    if self.ConsumeMinClip > 0 and self:Clip1() < self.ConsumeMinClip then return end
     local owner = self:GetOwner()
     owner:SetAnimation(PLAYER_ATTACK1)
 

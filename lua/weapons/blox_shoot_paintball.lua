@@ -5,10 +5,10 @@ SWEP.Base = "blox_base_shoot"
 SWEP.Category = "Bloxxer's Arsenal"
 SWEP.Spawnable = true
 
-SWEP.Author = "speedonerd"
+SWEP.Author = "speedonerd, 8Z"
 SWEP.Instructions = "Left Click: Shoot"
-SWEP.Description = "A sporting device which uses compressed air to shoot balls of paint. Very safe and definitely non-lethal."
-SWEP.Tips = [[- The paintball gun's projectiles can synergize with other items.
+SWEP.Description = "A non-violent weapon that is just for fun. Chase your friends around and paint the town red!"
+SWEP.Tips = [[- The Paintball Gun and most other guns can </color><color=255,120,120,255>headshot</color><color=150,150,150,255> for additional damage.
 
 - Shooting a Time Bomb or Subspace Tripmine will instantly trigger it, bypassing its fuse time. This can be used in combat or to make explosive jumps easier. 
 ]]
