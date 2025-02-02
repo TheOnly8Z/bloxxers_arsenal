@@ -10,11 +10,11 @@ SWEP.Instructions = "Left Click: Fast Rocket\nRight Click: Slow Rocket"
 SWEP.Description = "Do not point directly at face (unless it's your enemy's face)."
 SWEP.Tips = [[- Slow rockets and rockets that immediately detonate have a shorter cooldown.
 
-- Rockets do significantly more damage on a </color><color=255,120,120,255>direct hit</color><color=150,150,150,255>, indicated by sparks on impact.
+- Rockets do significantly more damage on a </color><color=255,120,120,255>direct hit</color><color=150,150,150,255>.
 
 - You can </color><color=255,220,120,255>blast jump</color><color=150,150,150,255> with the rockets, taking a little self damage and launching a fair distance.
 
-- Shoot at bombs to detonate them. </color><color=255,120,120,255>Direct hits</color><color=150,150,150,255> will create a powerful </color><color=220,120,255,255>explosive combo</color><color=150,150,150,255>!]]
+- Rockets detonate bombs. </color><color=255,120,120,255>Direct hit</color><color=150,150,150,255> to create a powerful </color><color=220,120,255,255>explosive combo</color><color=150,150,150,255>!]]
 
 SWEP.ViewModel = "models/weapons/bloxxers_arsenal/v_rocketlauncher.mdl"
 SWEP.WorldModel = ""
