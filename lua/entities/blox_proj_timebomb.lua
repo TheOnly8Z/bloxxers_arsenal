@@ -98,6 +98,7 @@ function ENT:OnReflect(dmg)
         local speed = math.max(self.ReflectSpeed, physobj:GetVelocity():Length())
         physobj:AddVelocity(attacker:GetAimVector() * speed)
     end
+    return true
 end
 
 function ENT:OnComboDetonate(dmg, combo)

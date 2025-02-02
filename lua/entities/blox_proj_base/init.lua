@@ -63,8 +63,14 @@ end
 function ENT:OnTakeDamage(dmg)
     local cancel_damage = false
     if bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_REFLECT then
-        self:OnReflect(dmg)
-        cancel_damage = true
+        local ok = self:OnReflect(dmg)
+        if ok then
+            local eff = EffectData()
+            eff:SetOrigin(dmg:GetDamagePosition())
+            eff:SetNormal(dmg:GetDamageForce():GetNormalized())
+            util.Effect("StunstickImpact", eff)
+            cancel_damage = true
+        end
     end
 
     if bit.band(dmg:GetDamageCustom(), BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_DETONATE) == BLOXXERS_ARSENAL.CDMG_ACTIVE + BLOXXERS_ARSENAL.CDMG_DETONATE then

@@ -144,6 +144,7 @@ function ENT:OnReflect(dmg)
             self.Resets = self.Resets + 1
         end
     end
+    return true
 end
 
 function ENT:GravGunPunt(ply)
