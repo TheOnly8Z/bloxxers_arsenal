@@ -24,7 +24,7 @@ SWEP.ShootEntity = "blox_proj_paintball"
 SWEP.ShootForce = 6000
 SWEP.ShootCooldown = 0.6
 SWEP.ShootDelay = 0
-SWEP.ShootOriginOffset = Vector(0, 20, 0)
+SWEP.ShootOriginOffset = Vector(16, 20, 0)
 
 SWEP.PogoLimit = 0
 
