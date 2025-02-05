@@ -12,6 +12,7 @@ function SWEP:DoDrawCrosshair(x, y)
 end
 
 function SWEP:DrawHUD()
+    local ply = LocalPlayer()
     local allow_offhand = self.FreeOffhand
 
     local s = SS(32)
