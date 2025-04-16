@@ -53,6 +53,12 @@ $bonemerge "ValveBiped.Bip01_R_Finger0"
 $bonemerge "ValveBiped.Bip01_R_Finger01"
 $bonemerge "ValveBiped.Bip01_R_Finger02"
 
+$texturegroup "skinfamilies"
+{
+	{ "bloxy_cola" }
+	{ "witches_brew" }
+}
+
 $sequence "idle" {
 	"anims\idle.smd"
 	activity "ACT_VM_IDLE" 1
