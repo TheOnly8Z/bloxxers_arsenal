@@ -12,7 +12,6 @@ ROBLOX Brickbattle Gear, reimagined for Garry's Mod.
 - Trowel
 - Superball [X]
 - Paintball Gun [X]
-- Subspace Tripmine
 
 ### Sword Fights on the Heights
 - Firebrand
@@ -27,5 +26,4 @@ ROBLOX Brickbattle Gear, reimagined for Garry's Mod.
 - Bloxy Cola [X]
 - Witches Brew
 - Cheezburger
-- Grappling Hook
 - Rocket Boots
