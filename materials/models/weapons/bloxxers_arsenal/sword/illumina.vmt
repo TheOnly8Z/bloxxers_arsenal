@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/debug/debugwhite"
+	"$surfaceprop" "plastic"
+	//"$bumpmap" "models/weapons/bloxxers_arsenal/plastic_n" // models/weapons/bloxxers_arsenal/plastic_n
+
+	"$envmap" "env_cubemap"
+	//"$envmapmask" "models/debug/debugwhite"
+	"$normalmapalphaenvmapmask" "1"
+	"$envmapcontrast" "1"
+	"$envmaptint" "[0.85 0.9 1]"
+	
+	"$color2" "[0.75 0.8 1]"
+    "$blendtintbybasealpha" "1"
+
+}

@@ -13,6 +13,15 @@ $contents "solid"
 
 $cdmaterials "models\weapons\bloxxers_arsenal\sword\"
 
+$texturegroup "skinfamilies"
+{
+	{ "sword" }
+	{ "ghostwalker" }
+	{ "illumina" }
+	{ "windforce" }
+	{ "darkheart" }
+}
+
 $bonemerge "ValveBiped.Bip01_Spine4"
 $bonemerge "ValveBiped.Bip01_L_Clavicle"
 $bonemerge "ValveBiped.Bip01_L_UpperArm"
