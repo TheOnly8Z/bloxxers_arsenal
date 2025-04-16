@@ -4,7 +4,7 @@ $modelname "weapons\bloxxers_arsenal\v_rocketlauncher.mdl"
 
 $bodygroup "weapon"
 {
-	studio "main_fixed.smd"
+	studio "main.smd"
 }
 
 $surfaceprop "default"
@@ -80,19 +80,19 @@ $sequence "shoot" {
 	fps 30
 }
 
-$sequence "reload" {
-	"anims\reload.smd"
-	activity "ACT_VM_RELOAD" 1
-	fadein 0.1
-	fadeout 0.2
-	fps 30
-}
+//$sequence "reload" {
+//	"anims\reload.smd"
+//	activity "ACT_VM_RELOAD" 1
+//	fadein 0.1
+//	fadeout 0.2
+//	fps 30
+//}
 
-$sequence "shoot_then_reload" {
-	"anims\shoot_reload.smd"
-	activity "ACT_VM_PRIMARYATTACK" 1
-	fadein 0
-	fadeout 0.1
-	snap
-	fps 30
-}
+//$sequence "shoot_then_reload" {
+//	"anims\shoot_reload.smd"
+//	activity "ACT_VM_PRIMARYATTACK" 1
+//	fadein 0
+//	fadeout 0.1
+//	snap
+//	fps 30
+//}
