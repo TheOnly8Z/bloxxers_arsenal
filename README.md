@@ -5,13 +5,13 @@ ROBLOX Brickbattle Gear, reimagined for Garry's Mod.
 ## Planned Content
 
 ### Classic Brickbattle Armory
-- Linked Sword [X]
+- Linked Sword
 - Slingshot
-- Time Bomb [X]
-- Rocket Launcher [X]
+- Time Bomb
+- Rocket Launcher
 - Trowel
-- Superball [X]
-- Paintball Gun [X]
+- Superball
+- Paintball Gun
 
 ### Sword Fights on the Heights
 - Firebrand
@@ -23,7 +23,7 @@ ROBLOX Brickbattle Gear, reimagined for Garry's Mod.
 - Illumina
 
 ### Consumables and Tools
-- Bloxy Cola [X]
+- Bloxy Cola
 - Witches Brew
 - Cheezburger
 - Rocket Boots
