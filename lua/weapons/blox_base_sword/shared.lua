@@ -222,6 +222,29 @@ function SWEP:DealDamage(initial, offhand)
         })
     end
 
+    -- Fake bullet to create impact effects
+    if initial and IsFirstTimePredicted() then
+        self:FireBullets({
+            Attacker = owner,
+            Inflictor = self,
+            Damage = 0,
+            Force = 0.01,
+            Tracer = 0,
+            Distance = dist + 4,
+            Src = owner:GetShootPos(),
+            Dir = owner:GetAimVector(),
+        })
+        if offhand then
+            owner:ViewPunch(Angle(1, -1.5, 1.5))
+        elseif anim == "slash1" then
+            owner:ViewPunch(Angle(-1, 2, -1))
+        elseif anim == "slash2" then
+            owner:ViewPunch(Angle(-1, -2, 1))
+        elseif anim == "lunge" then
+            owner:ViewPunch(Angle(-3, 0, 0))
+        end
+    end
+
     -- We need the second part for single player because SWEP:Think is ran shared in SP
     -- if tr.Hit and not (game.SinglePlayer() and CLIENT) then
     --     self:EmitSound(self.PogoSound)
