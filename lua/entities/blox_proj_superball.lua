@@ -8,14 +8,16 @@ ENT.Model = "models/weapons/bloxxers_arsenal/projectiles/superball.mdl"
 ENT.PhysicsMaterial = "metal_bouncy"
 ENT.PhysicsSphere = 15
 
-ENT.GravityMultiplier = 3
+ENT.GravityMultiplier = 4.5
 ENT.Buoyancy = 0.01
 ENT.LifeTime = 6
+ENT.Mass = 10
+ENT.Drag = 1
 
 ENT.MinBounces = 3
 ENT.MaxBounces = 12
-ENT.BounceSpeedMax = 0.9
-ENT.BounceSpeedMin = 0.5
+ENT.BounceSpeedMax = 0.95
+ENT.BounceSpeedMin = 0.25
 
 ENT.DamageSpeedThreshold = 1200
 ENT.Damage = 50
@@ -24,6 +26,7 @@ ENT.DamageMin = 25
 ENT.ReflectSpeed = 2000
 
 ENT.Bounces = 0
+ENT.BounceTime = 0
 
 ENT.Resets = 0
 ENT.MaxResets = 10
@@ -107,14 +110,17 @@ function ENT:PhysicsCollide(data, physobj)
                 if len <= 2000 then
                     -- TODO This should calculate upwards angle so that the ball lands in front of the player without a bounce
                     new_dir = (self:GetOwner():EyePos() - self:GetPos()):GetNormalized()
-                    speed_mult = 0.9
+                    speed_mult = 0.75
                 end
             end
         end
-        self.Bounces = self.Bounces + 1
+        if self.BounceTime < CurTime() then
+            self.BounceTime = CurTime() + 0.1 -- Bounces that happen rapidly don't quickly kill the projectile
+            self.Bounces = self.Bounces + 1
+        end
         physobj:SetVelocity(new_dir * last_speed * speed_mult)
     end
-    if self.Bounces >= self.MaxBounces and data.Speed <= 96 then
+    if self.Bounces >= self.MaxBounces and data.Speed <= 128 then
         SafeRemoveEntity(self)
         return
     end
